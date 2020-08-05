@@ -1,0 +1,60 @@
+import { Request, Response } from 'express';
+import { ProposalService } from './proposal.service';
+import {
+    Controller,
+    Get,
+    Post,
+    Req,
+    Res,
+    Delete,
+  } from '@nestjs/common';
+@Controller('proposal')
+export class ProposalController {
+    constructor(private readonly ProposalService: ProposalService) {}
+     // Here we get ALL proposals from the database
+  @Get()
+  async getAllProposals(@Req() req: Request, @Res() res: Response) {
+    try {
+      const result = await this.ProposalService.getAllProposals();
+      if (result.length == 0) {
+        res
+          .status(400)
+          .send({ responseCode: 400, result: 'No Proposals Found' });
+      } else {
+        res.status(200).send({
+          responseCode: 200,
+          result: result,
+        });
+      }
+    } catch (err) {
+      res.status(400).send({
+        responseCode: 400,
+        result: err,
+      });
+    }
+  }
+
+    // Here we get proposals by giving the ID in PARAMS
+    @Get('/:id')
+    async getProposalsById(@Req() req: Request, @Res() res: Response) {
+      try {
+        const result = await this.ProposalService.getProposalsById(req.params.id);
+        if (result) {
+          res.status(200).send({
+            responseCode: 200,
+            result: result,
+          });
+        } else {
+          res.status(400).send({
+            responseCode: 400,
+            result: 'No Proposal Found',
+          });
+        }
+      } catch (err) {
+        res.status(400).send({
+          responseCode: 400,
+          result: err,
+        });
+      }
+    }
+}
