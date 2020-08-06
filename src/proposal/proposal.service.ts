@@ -21,6 +21,7 @@ export class ProposalService {
             }
           };
 
+         
           getProposalsById = async id => {
             try {
               const result = await this.proposalModel.findById(id);

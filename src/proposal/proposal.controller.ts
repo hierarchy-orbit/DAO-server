@@ -34,6 +34,8 @@ export class ProposalController {
     }
   }
 
+  
+
     // Here we get proposals by giving the ID in PARAMS
     @Get('/:id')
     async getProposalsById(@Req() req: Request, @Res() res: Response) {
