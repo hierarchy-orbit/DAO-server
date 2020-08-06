@@ -21,7 +21,17 @@ export class ProposalService {
             }
           };
 
-         
+          postProposal = async (req, res) => {
+            try {
+              console.log(req.numioAddress);
+              
+              const createdProposal = await this.proposalModel.create(req);
+
+              return createdProposal
+            } catch (err) {
+              throw err.message;
+            }
+          };
           getProposalsById = async id => {
             try {
               const result = await this.proposalModel.findById(id);

@@ -34,7 +34,25 @@ export class ProposalController {
     }
   }
 
-  
+   // Here post a NEW proposal
+   @Post('')
+   async postProposal(@Req() req: Request, @Res() res: Response) {
+     try {
+       const result = await this.ProposalService.postProposal(req.body, res);
+       //console.log('Response --->>', result._id);
+       // console.log(req.body);
+       res.status(200).send({
+         responseCode: 200,
+         result: result,
+       });
+     } catch (err) {
+       res.status(400).send({
+         responseCode: 400,
+         result: err,
+       });
+     }
+   }
+
 
     // Here we get proposals by giving the ID in PARAMS
     @Get('/:id')
