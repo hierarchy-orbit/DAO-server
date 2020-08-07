@@ -37,7 +37,7 @@ The Proposal folder has all the files regarding the Proposals. The **proposal.co
 
 
 ## Functions
-1. View all our Proposals
+1. View all our Proposals.
 2. Get a Proposal by Id.
 3. Access all Proposals of a specific Status.
 4. Get a Proposal By it's Numio Address.
@@ -48,6 +48,17 @@ The Proposal folder has all the files regarding the Proposals. The **proposal.co
 9. Change Status of a Milestone by Admin.
 10. Change Status of a Milestone by User.
 
+## User
+The User folder in "/src" has all the files regarding the users. The **user.controller.ts** deals with all the routes of the users. The **user.model.ts** has the schema/design of our users. The **user.module.ts** connects us to our database which is Mongodb. The **user.service.ts** is where we have all our functions to add or access a user.
+
+
+## Functions
+1. View all our users.
+2. Add a new user.
+3. Get a user by providing his numio_address.
+4. Get a user by providing his email.
+5. Get all proposals on which the specified user has voted.
+6. Get all proposals on which the specified user has staked.
 
 ## Updates
 1. DATABASE_URL
