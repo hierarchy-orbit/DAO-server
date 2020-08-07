@@ -2,7 +2,7 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
 
-[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
+<!-- [travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
 [travis-url]: https://travis-ci.org/nestjs/nest
 [linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
 [linux-url]: https://travis-ci.org/nestjs/nest
@@ -20,13 +20,40 @@
 <a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
   <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
   <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
+</p> -->
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+<!-- [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository. -->
+In this project we have three modules yet. **Auth module** where we have the authentication, **Proposal module** where we are dealing with the Proposals which can be added and viewed and the last one is the **User Module** this is where we have our Users which can vote and stake on the Proposals.
+
+
+# File Structure
+
+## Proposal
+The Proposal folder has all the files regarding the Proposals. The **proposal.controller.ts** deals with all the routes regarding the Proposals. The **proposal.model.ts** has the schema/design of our Proposals. The **proposal.module.ts** connects us to our database which is Mongodb. The **proposal.service.ts** is where we have all our functions to access and manipulate the Proposals.
+
+
+## Functions
+1. View all our Proposals
+2. Get a Proposal by Id.
+3. Access all Proposals of a specific Status.
+4. Get a Proposal By it's Numio Address.
+5. Update the status of a Proposal.
+6. Vote on a Proposal.
+7. Post a new Proposal.
+8. Change Milestone of a Proposal.
+9. Change Status of a Milestone by Admin.
+10. Change Status of a Milestone by User.
+
+
+## Updates
+1. DATABASE_URL
+2. private_key
+3. SECRET_KEY
+4. Attributes_DOC_ID
 
 ## Installation
 
@@ -64,11 +91,11 @@ $ npm run test:cov
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+<!-- ## Stay in touch
 
 - Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
 - Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Twitter - [@nestframework](https://twitter.com/nestframework) -->
 
 ## License
 

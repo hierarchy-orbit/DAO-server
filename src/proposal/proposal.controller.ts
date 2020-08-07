@@ -77,4 +77,24 @@ export class ProposalController {
         });
       }
     }
+
+  // Here we get a proposal by NUMIOADDRESS
+  @Post('/getByNumioAddress')
+  async getByNumioAddress(@Req() req: Request, @Res() res: Response) {
+    try {
+      const result = await this.ProposalService.getProposalByNumioAddress(
+        req.body.numioAddress,
+      );
+
+      res.status(200).send({
+        statusCode: 200,
+        result: result,
+      });
+    } catch (err) {
+      res.status(400).send({
+        responseCode: 400,
+        result: err.message,
+      });
+    }
+  }
 }
