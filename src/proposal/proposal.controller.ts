@@ -97,4 +97,28 @@ export class ProposalController {
       });
     }
   }
+
+   // Here we get Proposals by STATUS
+   @Post('/status')
+   async getPropsalsByStatus(@Req() req: Request, @Res() res: Response) {
+     try {
+       const result = await this.ProposalService.getProposalsByStatus(
+         req,
+       );
+       if (result.length !== 0) {
+         //console.log(req.body);
+         res.status(200).send({
+           responseCode: 200,
+           result: result,
+         });
+       } else {
+         res.status(400).send({ responseCode: 400, result: 'Not Found' });
+       }
+     } catch (err) {
+       res.status(400).send({
+         responseCode: 400,
+         result: err,
+       });
+     }
+   }
 }
