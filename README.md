@@ -24,6 +24,9 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+# About 
+PhoenixDAO is a truly decentralized, open-source project that covers identity, payments, tokenization, authentication, and storage, alongside a dApp Store which sits at the heart of the Phoenix ecosystem. A core part of the PhoenixDAO strategy is to actively on-board both individual developers and enterprise level corporations to build using the protocols to power their products. This will enhance decentralization, token utility and the overall ecosystem.
+
 # Description
 
 <!-- [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository. -->
@@ -54,6 +57,8 @@ The Proposal folder has all the files regarding the Proposals. The **proposal.co
 2. private_key
 3. SECRET_KEY
 4. Attributes_DOC_ID
+
+Create these variables in your ".env" file and assign your values to these variables.
 
 ## Installation
 
