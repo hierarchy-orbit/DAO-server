@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -34,6 +35,34 @@ export class UserService {
       }
     } catch (error) {
       console.log(error);
+      throw error;
+    }
+  }
+  async getUserByEmail(email) {
+    let user;
+    try {
+      if (!email) {
+        throw { statusCode: 400, message: 'Please provide email!' };
+      }
+      user = await this.userModel.findOne({ email: email }).exec();
+      if (user) {
+        return user;
+      } else {
+        throw { statusCode: 405, message: 'No user found!' };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getUserById(id): Promise<User> {
+    try {
+      const user = await this.findUser(id);
+      if (user) {
+        return user;
+      } else {
+        throw { statusCode: 404, message: 'User not found' };
+      }
+    } catch (error) {
       throw error;
     }
   }
