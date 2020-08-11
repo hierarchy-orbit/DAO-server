@@ -56,4 +56,14 @@ export class ProposalService {
           throw { status: 400, message: err.message };
         }
       };
+
+      getProposalsByStatus = async req => {
+        try { 
+          //console.log('Status ===>>>>', status);
+          const result = await this.proposalModel.find({ status: req.body.status });
+          return result;
+        } catch (err) {
+          throw err;
+        }
+      };
 }
