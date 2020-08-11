@@ -74,6 +74,40 @@ export class UserController {
       });
     }
   }
+  // Here we get proposals those a user have voted on, by providing user's numio address
+  @Get('/votedProposal/:id')
+  async getVotedProposals(@Req() req: Request, @Res() res: Response) {
+    try {
+      const user = await this.userService.getVotedProposals(req);
+
+      res.status(200).send({
+        responseCode: 200,
+        result: user,
+      });
+    } catch (err) {
+      console.log('Catch 4');
+      res.status(err.statusCode).send({
+        responseCode: err.statusCode,
+        result: err.message,
+      });
+    }
+  }
+  // Here we get proposals those a user have staked on, by providing user's numio address
+  @Get('/stakedProposal/:id')
+  async getStakedProposals(@Req() req: Request, @Res() res: Response) {
+    try {
+      const user = await this.userService.getStakedProposals(req);
+
+      res.status(200).send({
+        responseCode: 200,
+        result: user,
+      });
+    } catch (err) {
+      console.log('Catch 4');
+      res.status(err.statusCode).send({
+        responseCode: err.statusCode,
+        result: err.message,
+      });
+    }
+  }
 }
-
-

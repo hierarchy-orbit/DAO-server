@@ -21,7 +21,6 @@ export class UserService {
         throw { statusCode: 400, message: 'User already exist' };
       }
     } catch (error) {
-      console.log('sdsdsd ', error);
       throw error;
     }
   }
@@ -34,7 +33,6 @@ export class UserService {
         throw { statusCode: 404, message: 'No users found!' };
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -66,6 +64,63 @@ export class UserService {
       throw error;
     }
   }
+  getVotedProposals = async req => {
+    try {
+      const userExist = await this.userModel.findOne({
+        numioAddress: req.params.id,
+      });
+
+      if (!userExist) {
+        throw { statusCode: 400, message: 'No user found' };
+      }
+      const result = await this.userModel
+        .findOne({ numioAddress: req.params.id })
+        .populate('proposalVote')
+        .then(prop => {
+          console.log('in then');
+          if (prop.proposalVote.length == 0) {
+            throw { statusCode: 404, message: 'No Proposal Found' };
+          }
+          return prop.proposalVote;
+        })
+        .catch(err => {
+          throw err;
+        });
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  getStakedProposals = async req => {
+    try {
+      const userExist = await this.userModel.findOne({
+        numioAddress: req.params.id,
+      });
+
+      if (!userExist) {
+        throw { statusCode: 400, message: 'No user found' };
+      }
+      const result = await this.userModel
+        .findOne({ numioAddress: req.params.id })
+        .populate('proposalStake')
+        .then(prop => {
+          if (prop.proposalStake.length == 0) {
+            throw { statusCode: 404, message: 'No Proposal Found' };
+          }
+          return prop.proposalStake;
+        })
+        .catch(err => {
+          throw err;
+        });
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  };
+
   private async findUser(id: string): Promise<User> {
     let user;
     try {
