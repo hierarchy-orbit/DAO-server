@@ -15,6 +15,23 @@ export class TransactionService {
     @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
 
+  async createTransaction(TxHash, type, numioAddress, stakeId) {
+    try {
+      const newTransaction = await this.transactionModel({
+        TxHash,
+        Type: type,
+        numioAddress,
+        stakeId,
+      });
+      const createdTransaction = await this.transactionModel.create(
+        newTransaction,
+      );
+      return createdTransaction;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getAllTransactions(): Promise<Transaction[]> {
     try {
       const transactions = await this.transactionModel.find().exec();
