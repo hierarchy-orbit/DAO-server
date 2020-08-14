@@ -15,7 +15,7 @@ export class TransactionService {
     @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
 
-  async getAllTransactions(): Promise<Transaction[]> {
+  async getAllTransactions() {
     try {
       const transactions = await this.transactionModel.find().exec();
       if (transactions.length !== 0) {
@@ -28,7 +28,7 @@ export class TransactionService {
       throw error;
     }
   }
-  async getTransactionById(id): Promise<Transaction> {
+  async getTransactionById(id) {
     try {
       const transaction = await this.findTransaction(id);
       if (transaction) {
@@ -55,7 +55,7 @@ export class TransactionService {
       throw error;
     }
   }
-  private async findTransaction(id: string): Promise<Transaction> {
+  private async findTransaction(id: string) {
     let transaction;
     try {
       transaction = await this.transactionModel.findById(id).exec();
