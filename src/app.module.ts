@@ -13,6 +13,7 @@ import { ProposalModule } from './proposal/proposal.module';
 import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './loggerMiddleware';
 import { TransactionModule } from './transaction/transaction.module';
+import { StakeModule } from './stake/stake.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -24,6 +25,7 @@ import { TransactionModule } from './transaction/transaction.module';
     ProposalModule,
     AuthModule,
     TransactionModule,
+    StakeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
