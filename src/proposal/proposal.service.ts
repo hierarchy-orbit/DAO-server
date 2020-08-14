@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Proposal } from './proposal.model';
@@ -21,7 +22,7 @@ export class ProposalService {
         }
       };
 
-      postProposal = async (req, res) => {
+      postProposal = async (req) => {
         try {
           console.log(req.numioAddress);
           
