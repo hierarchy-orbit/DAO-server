@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { MongooseModule } from '@nestjs/mongoose';
 
 export const DAOAttributesSchema = new mongoose.Schema({
   minimumUpvotes: {
