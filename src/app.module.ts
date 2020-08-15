@@ -15,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './loggerMiddleware';
 import { TransactionModule } from './transaction/transaction.module';
 import { StakeModule } from './stake/stake.module';
+import { AdminModule } from './admin/admin.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -27,6 +28,7 @@ import { StakeModule } from './stake/stake.module';
     AuthModule,
     TransactionModule,
     StakeModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
