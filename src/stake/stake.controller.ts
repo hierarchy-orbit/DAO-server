@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { StakeService } from './stake.service';
 import { Request, Response } from 'express';
 
