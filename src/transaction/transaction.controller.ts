@@ -63,4 +63,27 @@ export class TransactionController {
       });
     }
   }
+  @Get('/user/:id')
+  async getTransactionsOfUser(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      if(!req.params.id){
+        throw {statusCode:400,message:"Please provide user id in the params"}
+      }
+      const transactions = await this.transactionService.getTransactionsOfUser(
+        req,res
+      );
+      res.status(200).send({
+        responseCode: 200,
+        result: transactions,
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        responseCode: error.statusCode,
+        result: error.message,
+      });
+    }
+  }
 }

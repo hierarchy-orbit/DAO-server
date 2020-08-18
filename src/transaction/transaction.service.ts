@@ -14,10 +14,6 @@ export class TransactionService {
 
     @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
-<<<<<<< HEAD
-
-=======
->>>>>>> f545d485d4e95725c9684c3ec707477f15b26266
   async createTransaction(TxHash, type, numioAddress, stakeId) {
     try {
       const newTransaction = await this.transactionModel({
@@ -34,12 +30,7 @@ export class TransactionService {
       throw error;
     }
   }
-<<<<<<< HEAD
-
-  async getAllTransactions(): Promise<Transaction[]> {
-=======
   async getAllTransactions() {
->>>>>>> f545d485d4e95725c9684c3ec707477f15b26266
     try {
       const transactions = await this.transactionModel.find().exec();
       if (transactions.length !== 0) {
@@ -76,6 +67,29 @@ export class TransactionService {
       }
       return trans;
     } catch (error) {
+      throw error;
+    }
+  }
+  async getTransactionsOfUser(req, res): Promise<Transaction[]> {
+    try {
+      console.log('user id is ===>', req.params.id);
+      const user = await this.userModel
+        .findOne({ numioAddress: req.params.id })
+        .exec();
+      console.log('user is ===>', user);
+      if (!user) {
+        throw { statusCode: 404, message: 'User not found!' };
+      }
+      const transactions = await this.transactionModel
+        .find({ numioAddress: req.params.id })
+        .exec();
+      if (transactions.length !== 0) {
+        return transactions;
+      } else {
+        throw { statusCode: 404, message: 'No transaction found!' };
+      }
+    } catch (error) {
+      console.log(error);
       throw error;
     }
   }
