@@ -14,7 +14,10 @@ export class TransactionService {
 
     @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
+<<<<<<< HEAD
 
+=======
+>>>>>>> f545d485d4e95725c9684c3ec707477f15b26266
   async createTransaction(TxHash, type, numioAddress, stakeId) {
     try {
       const newTransaction = await this.transactionModel({
@@ -31,8 +34,12 @@ export class TransactionService {
       throw error;
     }
   }
+<<<<<<< HEAD
 
   async getAllTransactions(): Promise<Transaction[]> {
+=======
+  async getAllTransactions() {
+>>>>>>> f545d485d4e95725c9684c3ec707477f15b26266
     try {
       const transactions = await this.transactionModel.find().exec();
       if (transactions.length !== 0) {
@@ -45,7 +52,7 @@ export class TransactionService {
       throw error;
     }
   }
-  async getTransactionById(id): Promise<Transaction> {
+  async getTransactionById(id) {
     try {
       const transaction = await this.findTransaction(id);
       if (transaction) {
@@ -72,7 +79,7 @@ export class TransactionService {
       throw error;
     }
   }
-  private async findTransaction(id: string): Promise<Transaction> {
+  private async findTransaction(id: string) {
     let transaction;
     try {
       transaction = await this.transactionModel.findById(id).exec();

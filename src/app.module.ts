@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
   Module,
   NestModule,
@@ -13,6 +14,8 @@ import { ProposalModule } from './proposal/proposal.module';
 import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './loggerMiddleware';
 import { TransactionModule } from './transaction/transaction.module';
+import { StakeModule } from './stake/stake.module';
+import { AdminModule } from './admin/admin.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -24,6 +27,8 @@ import { TransactionModule } from './transaction/transaction.module';
     ProposalModule,
     AuthModule,
     TransactionModule,
+    StakeModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

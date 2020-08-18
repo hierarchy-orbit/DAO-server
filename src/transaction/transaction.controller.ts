@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Controller, Req, Res, Get, Delete } from '@nestjs/common';
+import { Controller, Req, Res, Get } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { Request, Response } from 'express';
 
