@@ -18,7 +18,7 @@ export class StakeService {
     private readonly proposalService: ProposalService,
     private readonly transactionService: TransactionService,
   ) {}
-  async addStake(req) {
+  async addStake(req, res) {
     try {
       const user = req.body.user;
       const proposalId = req.params.id;
@@ -166,7 +166,7 @@ export class StakeService {
       throw error;
     }
   }
-  async getAllStakes() {
+  async getAllStakes(): Promise<Stake[]> {
     try {
       const stakes = await this.stakeModel.find().exec();
       if (stakes.length == 0) {

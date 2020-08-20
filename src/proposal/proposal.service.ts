@@ -7,7 +7,7 @@ import { UserService } from '../user/user.service';
 import { BlockChainFunctions } from '../web3';
 import { DAOAttributes } from '../admin/admin.model';
 import { TransactionService } from '../transaction/transaction.service';
-const moment = require('moment');
+import moment from 'moment';
 
 @Injectable()
 export class ProposalService {
@@ -58,7 +58,7 @@ export class ProposalService {
       if (Attributes.length == 0) {
         throw { statusCode: 404, message: 'No attributes found!' };
       }
-      let expirationDate = moment()
+      const expirationDate = moment()
         .add(Attributes[0].maxUpvoteDays, 'd')
         .format('YYYY-MM-DD');
       console.log('expirationDate ==>', expirationDate);
