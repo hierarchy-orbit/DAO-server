@@ -67,4 +67,26 @@ export class AdminService {
       throw err;
     }
   }
+  async getAllPendingMilestones() {
+    try {
+      const milestones = [];
+      const proposals = await this.proposalModel.find().exec();
+      console.log('proposals are ==> ', proposals);
+      for (let i = 0; i < proposals.length; i++) {
+        for (let j = 0; j < proposals[i].milestone.length; j++) {
+          if (proposals[i].milestone[j].status=="Pending") {
+            milestones.push(proposals[i].milestone[j]);
+          }
+        }
+      }
+      if (milestones.length !== 0) {
+        return milestones;
+      } else {
+        throw { statusCode: 404, message: 'No pending milestones found!' };
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 }

@@ -46,4 +46,19 @@ import {
       });
     }
   }
+  @Get('/milestones')
+  async getAllPendingMilestones(@Req() req: Request, @Res() res: Response) {
+    try {
+      const milestones = await this.adminService.getAllPendingMilestones();
+      res.status(200).send({
+        responseCode: 200,
+        result: milestones,
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        responseCode: error.statusCode,
+        result: error.message,
+      });
+    }
+  }
 }
