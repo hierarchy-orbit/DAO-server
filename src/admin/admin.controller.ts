@@ -4,6 +4,7 @@ import {
     Get,
     Req,
     Res,
+    Put,
   } from '@nestjs/common';
   import { AdminService } from './admin.service';
   import { Request, Response } from 'express';
@@ -27,4 +28,22 @@ import {
         });
       }
     }
+    @Put('/:id')
+  async updateAttributes(@Req() req: Request, @Res() res: Response) {
+    try {
+      const updatedAttributes = await this.adminService.updateAttributes(
+        req,
+        res,
+      );
+      res.status(200).send({
+        responseCode: 200,
+        result: updatedAttributes,
+      });
+    } catch (err) {
+      res.status(err.statusCode).send({
+        responseCode: err.statusCode,
+        result: err.message,
+      });
+    }
+  }
 }

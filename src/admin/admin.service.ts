@@ -29,4 +29,42 @@ export class AdminService {
       console.log(error);
     }
   }
+  async updateAttributes(req, res) {
+    try {
+      console.log('req body ===>', req.body);
+      console.log('req params ===>', req.params.id);
+      const user = await this.userModel.findById(req.params.id).exec();
+
+      console.log('user is ===>', user);
+      if (!user) {
+        throw { statusCode: 404, message: 'No user found!' };
+      }
+      if (!user.isAdmin) {
+        throw { statusCode: 403, message: 'Forbidden! admin resource!' };
+      }
+
+      if (
+        !req.body.minimumUpvotes ||
+        !req.body.monthlyBudget ||
+        !req.body.maxUpvoteDays
+      ) {
+        throw { statusCode: 400, message: 'Data validation error!' };
+      }
+      const updateAttributes = await this.DAOAttributesModel.findByIdAndUpdate(
+        process.env.Attributes_DOC_ID,
+        {
+          $set: {
+            minimumUpvotes: req.body.minimumUpvotes,
+            monthlyBudget: req.body.monthlyBudget,
+            maxUpvoteDays: req.body.maxUpvoteDays,
+          },
+        },
+        { new: true },
+      );
+      return updateAttributes;
+    } catch (err) {
+      console.log('err is ===>', err);
+      throw err;
+    }
+  }
 }
