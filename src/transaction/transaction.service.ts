@@ -93,6 +93,61 @@ export class TransactionService {
       throw error;
     }
   }
+  async getTransactionsOfUserOnCreatingProposals(
+    req,
+    res,
+  ): Promise<Transaction[]> {
+    try {
+      console.log('user id is ===>', req.params.id);
+      const user = await this.userModel
+        .findOne({ numioAddress: req.params.id })
+        .exec();
+      console.log('user is ===>', user);
+      if (!user) {
+        throw { statusCode: 404, message: 'User not found!' };
+      }
+      const transactions = await this.transactionModel
+        .find({ numioAddress: req.params.id, Type: 'Proposal' })
+        .exec();
+      if (transactions.length !== 0) {
+        return transactions;
+      } else {
+        throw { statusCode: 404, message: 'No transaction found!' };
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  async getTransactionsOfUserOnStakingProposal(
+    req,
+    res,
+  ): Promise<Transaction[]> {
+    try {
+      console.log('user id is ===>', req.params.id);
+      const user = await this.userModel
+        .findOne({ numioAddress: req.params.id })
+        .exec();
+      console.log('user is ===>', user);
+      if (!user) {
+        throw { statusCode: 404, message: 'User not found!' };
+      }
+      const transactions = await this.transactionModel.find({
+        numioAddress: req.params.id,
+        Type: 'Stake',
+      });
+
+      console.log(transactions);
+      if (transactions.length !== 0) {
+        return transactions;
+      } else {
+        throw { statusCode: 404, message: 'No transaction found!' };
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
   private async findTransaction(id: string) {
     let transaction;
     try {
