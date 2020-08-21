@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 
+
 export const UserSchema = new mongoose.Schema({
   numioAddress: {
     type: String,
@@ -13,6 +14,7 @@ export const UserSchema = new mongoose.Schema({
   },
   proposalVote: [
     {
+      //type: String,
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Proposal',
     },
@@ -23,10 +25,10 @@ export const UserSchema = new mongoose.Schema({
       ref: 'Proposal',
     },
   ],
-  isAdmin: {
-    type: Boolean,
-    default: 'false',
-  },
+  isAdmin:{
+    type:Boolean,
+    default:"false"
+  }
 });
 
 export interface User {
@@ -35,4 +37,5 @@ export interface User {
   walletAddress: string;
   proposalStake: mongoose.Schema.Types.ObjectId;
   proposalVote: mongoose.Schema.Types.ObjectId;
+  isAdmin: boolean;
 }
