@@ -97,7 +97,20 @@ export class ProposalService {
       throw 'No Proposal Found';
     }
   };
-
+  updateProposalStatus = async (id, status) => {
+    try {
+      const result = await this.proposalModel.findByIdAndUpdate(
+        id,
+        {
+          $set: { status: status },
+        },
+        { runValidators: true, new: true },
+      );
+      return result;
+    } catch (err) {
+      throw 'Error';
+    }
+  };
   getProposalByNumioAddress = async numioAddress => {
     try {
       const result = await this.proposalModel.find({
