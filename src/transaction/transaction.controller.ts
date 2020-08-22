@@ -63,6 +63,28 @@ export class TransactionController {
       });
     }
   }
+  @Get('/stake/proposal/:id')
+  async getTransactionsOfStakesOnProposal(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      console.log(req.params.id);
+      console.log(req.body.TYPE);
+      const transactions = await this.transactionService.getTransactionsOfStakesOnProposal(
+        req.params.id,
+      );
+      res.status(200).send({
+        responseCode: 200,
+        result: transactions,
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        responseCode: error.statusCode,
+        result: error.message,
+      });
+    }
+  }
   @Get('/user/:id')
   async getTransactionsOfUser(
     @Req() req: Request,
@@ -73,7 +95,7 @@ export class TransactionController {
         throw {statusCode:400,message:"Please provide user id in the params"}
       }
       const transactions = await this.transactionService.getTransactionsOfUser(
-        req,res
+        req
       );
       res.status(200).send({
         responseCode: 200,
@@ -96,7 +118,7 @@ export class TransactionController {
         throw {statusCode:400,message:"Please provide user id in the params"}
       }
       const transactions = await this.transactionService.getTransactionsOfUserOnCreatingProposals(
-        req,res
+        req
       );
       res.status(200).send({
         responseCode: 200,
@@ -119,7 +141,7 @@ export class TransactionController {
         throw {statusCode:400,message:"Please provide user id in the params"}
       }
       const transactions = await this.transactionService.getTransactionsOfUserOnStakingProposal(
-        req,res
+        req
       );
       res.status(200).send({
         responseCode: 200,

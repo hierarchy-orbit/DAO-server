@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Transaction } from './transaction.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
+import { Stake } from '../stake/stake.model';
 import { User } from 'src/user/user.model';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class TransactionService {
   constructor(
     @InjectModel('Transaction')
     private readonly transactionModel: Model<Transaction>,
-
+    @InjectModel('Stake') private readonly stakeModel: Model<Stake>,
     @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
   async createTransaction(TxHash, type, numioAddress, stakeId) {
@@ -70,7 +70,32 @@ export class TransactionService {
       throw error;
     }
   }
-  async getTransactionsOfUser(req, res): Promise<Transaction[]> {
+  async getTransactionsOfStakesOnProposal(id) {
+    try {
+      console.log('proposalId is ===> ', id);
+
+      const stakes = await this.stakeModel.find({ proposalId: id });
+      if (stakes.length == 0 || !stakes) {
+        throw { statusCode: 404, message: 'No stake found' };
+      }
+      console.log('stakes are ===> ', stakes);
+      const transactions = [];
+      for (let i = 0; i < stakes.length; i++) {
+        const trans = await this.transactionModel.find({
+          TxHash: stakes[i].TxHash,
+        });
+        transactions.push(trans);
+      }
+      if (transactions.length == 0) {
+        throw 'No transaction found!';
+      }
+      return transactions;
+    } catch (error) {
+      console.log('error is ==> ', error);
+      throw error;
+    }
+  }
+  async getTransactionsOfUser(req): Promise<Transaction[]> {
     try {
       console.log('user id is ===>', req.params.id);
       const user = await this.userModel
@@ -95,7 +120,7 @@ export class TransactionService {
   }
   async getTransactionsOfUserOnCreatingProposals(
     req,
-    res,
+    
   ): Promise<Transaction[]> {
     try {
       console.log('user id is ===>', req.params.id);
@@ -121,7 +146,7 @@ export class TransactionService {
   }
   async getTransactionsOfUserOnStakingProposal(
     req,
-    res,
+    
   ): Promise<Transaction[]> {
     try {
       console.log('user id is ===>', req.params.id);

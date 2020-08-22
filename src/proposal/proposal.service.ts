@@ -1,22 +1,30 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Proposal } from './proposal.model';
-import { InjectModel } from '@nestjs/mongoose';
+import { User } from '../user/user.model';
+import { Stake } from '../stake/stake.model';
+import { TransactionService } from '../transaction/transaction.service';
 import { UserService } from '../user/user.service';
 import { BlockChainFunctions } from '../web3';
+import { async } from 'rxjs/internal/scheduler/async';
 import { DAOAttributes } from '../admin/admin.model';
-import { TransactionService } from '../transaction/transaction.service';
-import moment from 'moment';
+import { EDESTADDRREQ } from 'constants';
+const moment = require('moment');
 
 @Injectable()
 export class ProposalService {
   constructor(
     @InjectModel('Proposal') private readonly proposalModel: Model<Proposal>,
+    // @InjectModel('Stake') private readonly stakeModel: Model<Stake>,
+    @InjectModel('User') private readonly userModel: Model<User>,
     @InjectModel('DAOAttributes')
-    private readonly userService: UserService,
     private readonly DAOAttributesModel: Model<DAOAttributes>,
     private readonly transactionService: TransactionService,
+    private readonly userService: UserService,
   ) {}
   getAllProposals = async () => {
     try {
@@ -122,6 +130,77 @@ export class ProposalService {
       return result;
     } catch (err) {
       throw { status: 400, message: err.message };
+    }
+  };
+
+  VoteOnProposal = async (req, res) => {
+    try {
+      const proposal = await this.proposalModel.findById(req.params.id);
+
+      if (!proposal) {
+        throw { statusCode: 404, message: 'Proposal Not Found' };
+      }
+
+      if (proposal.status !== 'UpVote') {
+        throw { statusCode: 400, message: 'Proposal cannot be upvoted' };
+      }
+
+      const checkUserExist = await this.userModel.find({
+        email: req.body.email,
+      });
+      if (checkUserExist.length == 0) {
+        throw { statusCode: 400, message: 'User does not exist' };
+      }
+      const check = proposal.votes.some(el => {
+        //Here is the name validation (A user cannot vote twice)
+        if (el.email == req.body.email) {
+          throw { statusCode: 400, message: 'User cannot vote again' };
+        }
+      });
+
+      const result = await this.proposalModel.findByIdAndUpdate(req.params.id, {
+        $push: {
+          votes: { date: Date.now(), email: req.body.email },
+        },
+      });
+
+      const result2 = await this.userModel.findOneAndUpdate(
+        { email: req.body.email },
+        { $push: { proposalVote: result._id } },
+      );
+
+      const checkCount = await this.proposalModel.findById(req.params.id);
+      const Attributes = await this.DAOAttributesModel.find().exec();
+      console.log('Attributes', Attributes.length);
+      if (Attributes.length == 0) {
+        throw { statusCode: 404, message: 'No attributes found!' };
+      }
+      if (checkCount.votes.length > Attributes[0].minimumUpvotes - 1) {
+        await this.updateProposalStatus(req.params.id, 'Voting');
+        let date = new Date();
+
+        console.log(date.getDate());
+        if (date.getDate() < 16) {
+          date = moment()
+            .add(1, 'M')
+            .format('YYYY-MM-01');
+          console.log('hellow oirkds');
+        } else {
+          date = moment()
+            .add(2, 'M')
+            .format('YYYY-MM-01');
+        }
+
+        console.log('date now', date);
+        const setMonth = await this.proposalModel.findByIdAndUpdate(
+          req.params.id,
+          { $set: { votingDate: date } },
+        );
+      }
+      console.log('Length Of the Array', checkCount.votes.length);
+      return 'Success';
+    } catch (err) {
+      throw { statusCode: 400, message: err.message };
     }
   };
 
