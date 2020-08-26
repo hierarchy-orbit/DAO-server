@@ -1,21 +1,27 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Injectable } from '@nestjs/common';
 import jwt = require('jsonwebtoken');
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../user/user.model';
+const numio = require('numio-sdk');
 
 @Injectable()
 export class AuthService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
-  async signin(req, res) {
+  async signin(req) {
     try {
       console.log(req.body.email);
       console.log(process.env.SECRET_KEY);
 
       const userExist = await this.userModel.findOne({ email: req.body.email });
       if (!userExist) {
-        throw { statusCode:404,message: 'User with this email doesnot exist' };
+        throw {
+          statusCode: 404,
+          message: 'User with this email doesnot exist',
+        };
       }
       const token = jwt.sign(
         { email: req.body.email },
@@ -34,23 +40,18 @@ export class AuthService {
       throw error;
     }
   }
-  async loginWithNumio(req, res) {
+  async loginWithNumio(req) {
     try {
-      let temp = {
+      const temp = {
         token: req.body.token,
         userDetails: ['email', 'fullname', 'profileImage'],
       };
-      let resp = await numio.verifyToken(temp);
+      const resp = await numio.verifyToken(temp);
       console.log('response -->', resp.data.data);
       if (!resp || resp.data.status !== 200) {
         throw { statusCode: 500, message: 'Internal server error' };
       }
-      const {
-        email,
-        first_name,
-        last_name,
-        profileImage,
-      } = resp.data.data.userInformation;
+      const { email } = resp.data.data.userInformation;
 
       console.log(email);
       console.log(process.env.SECRET_KEY);
@@ -58,7 +59,7 @@ export class AuthService {
       const userExist = await this.userModel.findOne({ email: email });
       if (!userExist) {
         //throw { statusCode:404,message: 'User with this email doesnot exist' };
-        let userData = {
+        const userData = {
           numioAddress: '1234',
           walletAddress: '1234',
           email: email,

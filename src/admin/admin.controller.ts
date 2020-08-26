@@ -27,10 +27,7 @@ export class AdminController {
   @Put('/:id')
   async updateAttributes(@Req() req: Request, @Res() res: Response) {
     try {
-      const updatedAttributes = await this.adminService.updateAttributes(
-        req,
-        res,
-      );
+      const updatedAttributes = await this.adminService.updateAttributes(req);
       res.status(200).send({
         responseCode: 200,
         result: updatedAttributes,

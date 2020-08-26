@@ -11,7 +11,7 @@ export class StakeController {
   @Post('/:id')
   async addStake(@Req() req: Request, @Res() res: Response) {
     try {
-      const result = await this.stakeService.addStake(req, res);
+      const result = await this.stakeService.addStake(req);
       res.status(200).send({
         responseCode: 200,
         result: result,

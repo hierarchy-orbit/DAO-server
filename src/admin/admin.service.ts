@@ -29,7 +29,7 @@ export class AdminService {
       console.log(error);
     }
   }
-  async updateAttributes(req, res) {
+  async updateAttributes(req) {
     try {
       console.log('req body ===>', req.body);
       console.log('req params ===>', req.params.id);
@@ -74,7 +74,7 @@ export class AdminService {
       console.log('proposals are ==> ', proposals);
       for (let i = 0; i < proposals.length; i++) {
         for (let j = 0; j < proposals[i].milestone.length; j++) {
-          if (proposals[i].milestone[j].status=="Pending") {
+          if (proposals[i].milestone[j].status == 'Pending') {
             milestones.push(proposals[i].milestone[j]);
           }
         }

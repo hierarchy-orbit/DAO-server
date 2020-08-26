@@ -118,10 +118,7 @@ export class TransactionService {
       throw error;
     }
   }
-  async getTransactionsOfUserOnCreatingProposals(
-    req,
-    
-  ): Promise<Transaction[]> {
+  async getTransactionsOfUserOnCreatingProposals(req): Promise<Transaction[]> {
     try {
       console.log('user id is ===>', req.params.id);
       const user = await this.userModel
@@ -144,10 +141,7 @@ export class TransactionService {
       throw error;
     }
   }
-  async getTransactionsOfUserOnStakingProposal(
-    req,
-    
-  ): Promise<Transaction[]> {
+  async getTransactionsOfUserOnStakingProposal(req): Promise<Transaction[]> {
     try {
       console.log('user id is ===>', req.params.id);
       const user = await this.userModel

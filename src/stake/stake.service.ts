@@ -18,7 +18,7 @@ export class StakeService {
     private readonly proposalService: ProposalService,
     private readonly transactionService: TransactionService,
   ) {}
-  async addStake(req, res) {
+  async addStake(req) {
     try {
       const user = req.body.user;
       const proposalId = req.params.id;
