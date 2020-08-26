@@ -1,34 +1,30 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {
-    Controller,
-    Get,
-    Req,
-    Res,
-    Put,
-  } from '@nestjs/common';
-  import { AdminService } from './admin.service';
-  import { Request, Response } from 'express';
-  
-  @Controller('DAOadminAttributes')
-  export class AdminController {
-    constructor(private readonly adminService: AdminService) {}
+import { Controller, Get, Req, Res, Put } from '@nestjs/common';
+import { AdminService } from './admin.service';
+import { Request, Response } from 'express';
 
-    @Get()
-    async getAttributes(@Req() req: Request, @Res() res: Response) {
-      try {
-        const attributes = await this.adminService.getAttributes();
-        res.status(200).send({
-          responseCode: 200,
-          result: attributes,
-        });
-      } catch (error) {
-        res.status(error.statusCode).send({
-          responseCode: error.statusCode,
-          result: error.message,
-        });
-      }
+@Controller('DAOadminAttributes')
+export class AdminController {
+  constructor(private readonly adminService: AdminService) {}
+
+  // Here we get all the adminAttributes
+  @Get()
+  async getAttributes(@Req() req: Request, @Res() res: Response) {
+    try {
+      const attributes = await this.adminService.getAttributes();
+      res.status(200).send({
+        responseCode: 200,
+        result: attributes,
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        responseCode: error.statusCode,
+        result: error.message,
+      });
     }
-    @Put('/:id')
+  }
+  // Here we update adminAttiributes
+  @Put('/:id')
   async updateAttributes(@Req() req: Request, @Res() res: Response) {
     try {
       const updatedAttributes = await this.adminService.updateAttributes(
@@ -46,6 +42,7 @@ import {
       });
     }
   }
+  // Here we get all milestones of all proposals which have status "Pending"
   @Get('/milestones')
   async getAllPendingMilestones(@Req() req: Request, @Res() res: Response) {
     try {
