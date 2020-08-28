@@ -213,4 +213,102 @@ export class ProposalService {
       throw err;
     }
   };
+  changeStatusOfMilestoneByAdmin = async (req, res) => {
+    try {
+      if (!req.params.id) {
+        throw {
+          statusCode: 400,
+          message: 'Please provide proposal id in params',
+        };
+      }
+
+      const result = await this.proposalModel.findById(req.params.id);
+      console.log('-----', result);
+      if (req.body.index > result.milestone.length) {
+        throw {
+          statusCode: 400,
+          message: 'Index must not be greater then the total milestones',
+        };
+      }
+      if (result.status != 'Accepted') {
+        throw { statusCode: 400, message: 'Invalid Status' };
+      }
+      if (!result) {
+        throw { statusCode: 404, message: 'Proposal not found!' };
+      }
+      if (!req.body.numioAddress) {
+        throw { statusCode: 400, message: 'Must Provide Numio Address' };
+      }
+      const user = await this.userModel.findOne({
+        numioAddress: req.body.numioAddress,
+      });
+      if (!user) {
+        throw { statusCode: 400, message: 'User not found' };
+      }
+      if (user.isAdmin == false) {
+        throw { statusCode: 400, message: 'User must be the admin' };
+      }
+      if (user.isAdmin) {
+        result.milestone[req.body.index].status = req.body.status;
+        console.log('result', result);
+        result.markModified('milestone');
+        result.save();
+      }
+      return result;
+    } catch (err) {
+      throw { statusCode: 400, message: err.message };
+    }
+  };
+
+  changeStatusOfMilestoneByUser = async (req, res) => {
+    try {
+      if (!req.params.id) {
+        throw {
+          statusCode: 400,
+          message: 'Please provide proposal id in params',
+        };
+      }
+      const result = await this.proposalModel.findById(req.params.id);
+
+      if (!result) {
+        throw { statusCode: 404, message: 'Proposal not found!' };
+      }
+      if (result.status != 'Accepted') {
+        throw { statusCode: 400, message: 'Invalid Status' };
+      }
+      console.log('Result', result.length);
+      if (req.body.index > result.milestone.length) {
+        throw {
+          statusCode: 400,
+          message: 'Index must not be greater then the total milestones',
+        };
+      }
+
+      if (!req.body.numioAddress) {
+        throw { statusCode: 400, message: 'Must Provide Numio Address' };
+      }
+      const user = await this.userModel.findOne({
+        numioAddress: req.body.numioAddress,
+      });
+      if (!user) {
+        throw { statusCode: 400, message: 'User not found' };
+      }
+      if (result.numioAddress != user.numioAddress) {
+        throw { statusCode: 400, message: 'Invalid User, user must be same' };
+      }
+      console.log('Proposal status', result);
+      if (req.body.status == 'Completed') {
+        result.milestone[req.body.index].status = 'Pending';
+      } else if (req.body.status == 'Incomplete') {
+        result.milestone[req.body.index] = 'Incomplete';
+      }
+
+      result.markModified('milestone');
+      result.save();
+
+      return result;
+    } catch (err) {
+      throw { statusCode: 400, message: err.message };
+    }
+  };
 }
