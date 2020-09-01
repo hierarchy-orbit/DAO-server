@@ -12,7 +12,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ProposalModule } from './proposal/proposal.module';
 import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './loggerMiddleware';
-import { TransactionModule } from './transaction/transactions.module';
+import { TransactionModule } from './transaction/transaction.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
