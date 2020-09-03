@@ -132,6 +132,20 @@ export class ProposalService {
       throw { status: 400, message: err.message };
     }
   };
+  getProposalByNumioAddressAndProposalStatus = async (numioAddress,status) => {
+    try {
+      const result = await this.proposalModel.find({
+        numioAddress: numioAddress,
+        status:status
+      });
+      if (result.length == 0) {
+        throw { statusCode: 404, message: 'Not Proposal Found' };
+      }
+      return result;
+    } catch (err) {
+      throw { status: 400, message: err.message };
+    }
+  };
 
   VoteOnProposal = async (req, res) => {
     try {

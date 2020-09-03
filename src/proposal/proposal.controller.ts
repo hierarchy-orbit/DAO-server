@@ -134,6 +134,26 @@ export class ProposalController {
       });
     }
   }
+  // Here we get proposals by NUMIOADDRESS whose status is accepted
+  @Post('/getByNumioAddress')
+  async getProposalByNumioAddressAndProposalStatus(@Req() req: Request, @Res() res: Response) {
+    try {
+      const result = await this.ProposalService.getProposalByNumioAddressAndProposalStatus(
+        req.body.numioAddress,
+        req.body.status
+      );
+
+      res.status(200).send({
+        statusCode: 200,
+        result: result,
+      });
+    } catch (err) {
+      res.status(400).send({
+        responseCode: 400,
+        result: err.message,
+      });
+    }
+  }
 
   // Here we get Proposals by STATUS
   @Post('/status')

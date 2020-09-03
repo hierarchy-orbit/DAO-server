@@ -44,23 +44,24 @@ export class AuthService {
     try {
       const temp = {
         token: req.body.token,
-        userDetails: ['email', 'fullname', 'profileImage'],
+        userDetails: ["fullname", "email", "profileImage", "numio_id"]
       };
       const resp = await numio.verifyToken(temp);
       console.log('response -->', resp.data.data);
       if (!resp || resp.data.status !== 200) {
         throw { statusCode: 500, message: 'Internal server error' };
       }
-      const { email } = resp.data.data.userInformation;
+      const { email,numioId } = resp.data.data.userInformation;
 
-      console.log(email);
+      console.log("email==>",email);
+      console.log("numioId==>",numioId);
       console.log(process.env.SECRET_KEY);
 
       const userExist = await this.userModel.findOne({ email: email });
       if (!userExist) {
         //throw { statusCode:404,message: 'User with this email doesnot exist' };
         const userData = {
-          numioAddress: '1234',
+          numioAddress: numioId,
           walletAddress: '1234',
           email: email,
           isAdmin: false,
