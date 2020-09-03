@@ -135,7 +135,7 @@ export class ProposalController {
     }
   }
   // Here we get proposals by NUMIOADDRESS whose status is accepted
-  @Post('/getByNumioAddress')
+  @Post('/getByNumioAddressAndProposalStatus')
   async getProposalByNumioAddressAndProposalStatus(@Req() req: Request, @Res() res: Response) {
     try {
       const result = await this.ProposalService.getProposalByNumioAddressAndProposalStatus(
