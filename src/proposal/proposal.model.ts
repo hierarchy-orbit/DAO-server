@@ -7,16 +7,17 @@ export const ProposalSchema = new Schema({
   description: { type: String, required: true },
   milestone: { type: Array, required: true },
   votingDate: { type: Date },
+  expirationDate: { type: Date, required: true },
   stake: [],
   votes: [],
+  minimumUpvotes: { type: Number },
   numioAddress: { type: String, required: true },
-  colletral: { type: Number, required: true },
-  
+  collateral: { type: Number, required: true },
   reward: { type: Number, required: true },
   status: {
     type: String,
     default: 'Pending',
-    enum: ['Pending', 'Rejected', 'Accepted', 'UpVote', 'Voting'],
+    enum: ['Pending', 'Rejected', 'Accepted', 'UpVote', 'Voting', 'Fail'],
   },
 });
 
