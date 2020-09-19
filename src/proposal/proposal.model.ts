@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import * as mongoose from 'mongoose';
 const Schema = mongoose.Schema;
+
 export const ProposalSchema = new Schema({
   budget: { type: Number, required: true },
   name: { type: String, required: true },
@@ -17,8 +18,8 @@ export const ProposalSchema = new Schema({
   status: {
     type: String,
     default: 'Pending',
-    enum: ['Pending', 'Rejected', 'Accepted', 'UpVote', 'Voting', 'Fail'],
+    enum: ['Pending', 'Rejected', 'Accepted', 'UpVote', 'Voting', 'Draw','Fail'],
   },
-});
+},{ timestamps: true });
 
 export interface Proposal {}

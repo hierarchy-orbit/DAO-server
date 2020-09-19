@@ -20,7 +20,7 @@ export const StakeSchema = new mongoose.Schema({
     default: 0,
   },
  
-});
+},{ timestamps: true });
 
 export interface Stake {
   amount: number;

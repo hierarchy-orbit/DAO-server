@@ -19,7 +19,7 @@ export const TransactionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Proposal',
   },
-});
+},{ timestamps: true });
 
 export interface Transaction {
   TxHash: string;

@@ -13,7 +13,7 @@ export const DAOAttributesSchema = new mongoose.Schema({
     type: Number,
     require: true,
   },
-});
+},{ timestamps: true });
 
 export interface DAOAttributes {
   mimimumUpvotes: number;

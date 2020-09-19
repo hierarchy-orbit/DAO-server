@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -13,6 +14,7 @@ import { BlockChainFunctions } from '../web3';
 import { async } from 'rxjs/internal/scheduler/async';
 import { DAOAttributes } from '../admin/admin.model';
 import { EDESTADDRREQ } from 'constants';
+const axios = require('axios');
 const moment = require('moment');
 
 @Injectable()
@@ -26,8 +28,110 @@ export class ProposalService {
     private readonly transactionService: TransactionService,
     private readonly userService: UserService,
   ) {}
+
+  votingResultCalculation = async req => {
+    //   let setSchedule = '0 0 4 * *';
+    try {
+      const votingProposals = await this.proposalModel.find({
+        status: req.body.status,
+      });
+      if (votingProposals.length === 0) {
+        throw {
+          statusCode: 404,
+          message: `No proposal with voting status ${req.body.status} found`,
+        };
+      }
+
+      let utcDate;
+
+      await axios
+        .get('http://worldtimeapi.org/api/timezone/America/New_York')
+        .then(value => {
+          // utcDate=moment(value.data.utc_datetime).format();
+        })
+        .catch(err => {
+          console.log('Error occured is ', err);
+        });
+
+      utcDate = moment(Date.now()).format();
+
+      console.log(
+        'resultDate is',
+        moment(votingProposals[0].votingDate)
+          .add(3, 'days')
+          .format(),
+      );
+      console.log('utcDate is', utcDate);
+
+      console.log(
+        'comparison',
+        moment(votingProposals[0].votingDate).format() < utcDate,
+      );
+
+      let totalVotes = 0;
+
+      // calculating total votes
+      for (let i = 0; i < votingProposals.length; i++) {
+        if (
+          moment(votingProposals[i].votingDate)
+            .add(3, 'days')
+            .format() < utcDate
+        ) {
+          totalVotes += votingProposals[i].stake.length;
+        }
+      }
+      console.log('total votes are', totalVotes);
+
+      // updating proposal status according to percentage of votes on it
+      for (let i = 0; i < votingProposals.length; i++) {
+        if (
+          moment(votingProposals[i].votingDate)
+            .add(3, 'days')
+            .format() < utcDate
+        ) {
+          if (
+            (totalVotes !== 0 && votingProposals[i].stake.length / totalVotes) *
+              100 >
+            50
+          ) {
+            votingProposals[i] = await this.proposalModel.findByIdAndUpdate(
+              votingProposals[i]._id,
+              {
+                $set: { status: 'Accepted' },
+              },
+              { runValidators: true, new: true },
+            );
+          } else if (
+            (totalVotes !== 0 && votingProposals[i].stake.length / totalVotes) *
+              100 ===
+            50
+          ) {
+            votingProposals[i] = await this.proposalModel.findByIdAndUpdate(
+              votingProposals[i]._id,
+              {
+                $set: { status: 'Draw' },
+              },
+              { runValidators: true, new: true },
+            );
+          } else {
+            votingProposals[i] = await this.proposalModel.findByIdAndUpdate(
+              votingProposals[i]._id,
+              {
+                $set: { status: 'Fail' },
+              },
+              { runValidators: true, new: true },
+            );
+          }
+        }
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
+
   getAllProposals = async () => {
     try {
+      this.votingResultCalculation({ body: { status: 'Voting' } });
       const result = await this.proposalModel.find();
       if (result.length !== 0) {
         return result;
@@ -66,14 +170,9 @@ export class ProposalService {
       if (Attributes.length == 0) {
         throw { statusCode: 404, message: 'No attributes found!' };
       }
-      const expirationDate = moment()
-        .add(Attributes[0].maxUpvoteDays, 'd')
-        .format('YYYY-MM-DD');
-      console.log('expirationDate ==>', expirationDate);
       const data = {
         ...req,
         minimumUpvotes: Attributes[0].minimumUpvotes,
-        expirationDate: expirationDate,
       };
       console.log('Data ', data);
 
@@ -107,6 +206,17 @@ export class ProposalService {
   };
   updateProposalStatus = async (id, status) => {
     try {
+      if (status === 'UpVote') {
+        const Attributes = await this.DAOAttributesModel.find().exec();
+        console.log('Attributes', Attributes.length);
+        if (Attributes.length == 0) {
+          throw { statusCode: 404, message: 'No attributes found!' };
+        }
+        const expirationDate = moment()
+          .add(Attributes[0].maxUpvoteDays, 'd')
+          .format('YYYY-MM-DD');
+        console.log('expirationDate ==>', expirationDate);
+      }
       const result = await this.proposalModel.findByIdAndUpdate(
         id,
         {
@@ -132,11 +242,11 @@ export class ProposalService {
       throw { status: 400, message: err.message };
     }
   };
-  getProposalByNumioAddressAndProposalStatus = async (numioAddress,status) => {
+  getProposalByNumioAddressAndProposalStatus = async (numioAddress, status) => {
     try {
       const result = await this.proposalModel.find({
         numioAddress: numioAddress,
-        status:status
+        status: status,
       });
       if (result.length == 0) {
         throw { statusCode: 404, message: 'Not Proposal Found' };

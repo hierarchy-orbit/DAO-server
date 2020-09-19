@@ -14,14 +14,25 @@ export class TransactionService {
     @InjectModel('Stake') private readonly stakeModel: Model<Stake>,
     @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
-  async createTransaction(TxHash, type, numioAddress, stakeId) {
+  async createTransaction(TxHash, type, numioAddress, Id) {
     try {
-      const newTransaction = await this.transactionModel({
-        TxHash,
-        Type: type,
-        numioAddress,
-        stakeId,
-      });
+      let newTransaction;
+      if(type=="Proposal"){
+        newTransaction = await this.transactionModel({
+          TxHash,
+          Type: type,
+          numioAddress,
+          proposalId:Id,
+        });
+      }else{
+        newTransaction= await this.transactionModel({
+          TxHash,
+          Type: type,
+          numioAddress,
+          stakeId:Id,
+        });
+      }
+      
       const createdTransaction = await this.transactionModel.create(
         newTransaction,
       );
@@ -32,7 +43,7 @@ export class TransactionService {
   }
   async getAllTransactions() {
     try {
-      const transactions = await this.transactionModel.find().exec();
+      const transactions = await this.transactionModel.find().populate("stakeId , proposalId").exec();
       if (transactions.length !== 0) {
         return transactions;
       } else {
@@ -61,7 +72,7 @@ export class TransactionService {
       const trans = await this.transactionModel.findOne({
         Type: propTYPE,
         proposalId: propId,
-      });
+      }).populate("stakeId , proposalId");
       if (!trans) {
         throw { message: 'No transaction found!' };
       }
@@ -83,7 +94,7 @@ export class TransactionService {
       for (let i = 0; i < stakes.length; i++) {
         const trans = await this.transactionModel.find({
           TxHash: stakes[i].TxHash,
-        });
+        }).populate("stakeId , proposalId");
         transactions.push(trans);
       }
       if (transactions.length == 0) {
@@ -107,6 +118,7 @@ export class TransactionService {
       }
       const transactions = await this.transactionModel
         .find({ numioAddress: req.params.id })
+        .populate("stakeId , proposalId")
         .exec();
       if (transactions.length !== 0) {
         return transactions;
@@ -130,6 +142,7 @@ export class TransactionService {
       }
       const transactions = await this.transactionModel
         .find({ numioAddress: req.params.id, Type: 'Proposal' })
+        .populate("stakeId , proposalId")
         .exec();
       if (transactions.length !== 0) {
         return transactions;
@@ -154,7 +167,7 @@ export class TransactionService {
       const transactions = await this.transactionModel.find({
         numioAddress: req.params.id,
         Type: 'Stake',
-      });
+      }).populate("stakeId , proposalId");
 
       console.log(transactions);
       if (transactions.length !== 0) {
@@ -170,7 +183,7 @@ export class TransactionService {
   private async findTransaction(id: string) {
     let transaction;
     try {
-      transaction = await this.transactionModel.findById(id).exec();
+      transaction = await this.transactionModel.findById(id).populate("stakeId , proposalId").exec();
       return transaction;
     } catch (error) {
       throw error;

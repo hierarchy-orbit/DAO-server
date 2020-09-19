@@ -7,11 +7,13 @@ export const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  email: { type: String, required: true, unique: true },
-  walletAddress: {
+  firstName: {
     type: String,
-    required: true,
   },
+  lastName : {
+    type:String
+  },
+  email: { type: String, required: true, unique: true },
   proposalVote: [
     {
       //type: String,
@@ -29,12 +31,13 @@ export const UserSchema = new mongoose.Schema({
     type:Boolean,
     default:"false"
   }
-});
+},{ timestamps: true });
 
 export interface User {
   numioAddress: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  walletAddress: string;
   proposalStake: mongoose.Schema.Types.ObjectId;
   proposalVote: mongoose.Schema.Types.ObjectId;
   isAdmin: boolean;

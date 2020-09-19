@@ -36,4 +36,19 @@ export class AuthController {
       });
     }
   }
+  @Post('/metamask')
+  async loginWithMetaMask(@Req() req: Request, @Res() res: Response) {
+    try {
+      const user = await this.authService.loginWithMetaMask(req);
+      res.status(200).send({
+        responseCode: 200,
+        result: user,
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        responseCode: error.statusCode,
+        result: error.message,
+      });
+    }
+  }
 }

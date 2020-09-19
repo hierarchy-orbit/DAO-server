@@ -39,6 +39,7 @@ export class AppModule implements NestModule {
       .apply(LoggerMiddleware)
       .exclude({ path: 'auth/login', method: RequestMethod.ALL })
       .exclude({ path: 'auth/numio', method: RequestMethod.ALL })
+      .exclude({ path: 'auth/metamask', method: RequestMethod.ALL })
       .forRoutes({ path: "*", method: RequestMethod.ALL });
   }
 }
