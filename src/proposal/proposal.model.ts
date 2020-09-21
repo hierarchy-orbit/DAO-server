@@ -8,7 +8,7 @@ export const ProposalSchema = new Schema({
   description: { type: String, required: true },
   milestone: { type: Array, required: true },
   votingDate: { type: Date },
-  expirationDate: { type: Date, required: true },
+  expirationDate: { type: Date },
   stake: [],
   votes: [],
   minimumUpvotes: { type: Number },

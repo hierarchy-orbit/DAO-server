@@ -206,8 +206,9 @@ export class ProposalService {
   };
   updateProposalStatus = async (id, status) => {
     try {
+      let Attributes = [];
       if (status === 'UpVote') {
-        const Attributes = await this.DAOAttributesModel.find().exec();
+        Attributes = await this.DAOAttributesModel.find().exec();
         console.log('Attributes', Attributes.length);
         if (Attributes.length == 0) {
           throw { statusCode: 404, message: 'No attributes found!' };
@@ -216,7 +217,17 @@ export class ProposalService {
           .add(Attributes[0].maxUpvoteDays, 'd')
           .format('YYYY-MM-DD');
         console.log('expirationDate ==>', expirationDate);
+
+        const result = await this.proposalModel.findByIdAndUpdate(
+          id,
+          {
+            $set: { status: status, expirationDate: expirationDate },
+          },
+          { runValidators: true, new: true },
+        );
+        return result;
       }
+
       const result = await this.proposalModel.findByIdAndUpdate(
         id,
         {
