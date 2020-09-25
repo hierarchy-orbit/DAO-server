@@ -167,7 +167,13 @@ export class TransactionService {
       const transactions = await this.transactionModel.find({
         numioAddress: req.params.id,
         Type: 'Stake',
-      }).populate("stakeId , proposalId");
+      }).populate({
+        path : 'stakeId',
+        populate : {
+          path : 'proposalId'
+        }})
+      // }).populate("stakeId.proposalId").exec(); 
+      // transactions.stakeId.populate("proposalId").exec();
 
       console.log(transactions);
       if (transactions.length !== 0) {

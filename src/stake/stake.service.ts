@@ -24,6 +24,8 @@ export class StakeService {
       const proposalId = req.params.id;
       const amount = req.body.amount;
       const days = req.body.days;
+      const reward = req.body.reward;
+      const TxHash= req.body.TxHash;
 
       console.log('amount is ', amount);
       console.log('days is ', days);
@@ -92,16 +94,16 @@ export class StakeService {
 
       // MAKING TRANSACTION
 
-      console.log(' before BCF');
-      const BCF = new BlockChainFunctions();
-      const TxHash = await BCF.getTxHash();
-      console.log('printing getTx', TxHash);
-      if (!TxHash) {
-        throw {
-          statusCode: 400,
-          message: 'Empty transaction Hash from server!',
-        };
-      }
+      // console.log(' before BCF');
+      // const BCF = new BlockChainFunctions();
+      // const TxHash = await BCF.getTxHash();
+      // console.log('printing getTx', TxHash);
+      // if (!TxHash) {
+      //   throw {
+      //     statusCode: 400,
+      //     message: 'Empty transaction Hash from server!',
+      //   };
+      // }
 
       // CREATING STAKE DOCUMENT AND SAVING IN DATABASE
 
@@ -112,6 +114,7 @@ export class StakeService {
         TxHash,
         days,
         proposalId,
+        reward
       });
       console.log('newStake IS ====>', newStake);
       const createdStake = await this.stakeModel.create(newStake);
@@ -168,7 +171,7 @@ export class StakeService {
   }
   async getAllStakes(): Promise<Stake[]> {
     try {
-      const stakes = await this.stakeModel.find().exec();
+      const stakes = await this.stakeModel.find().populate("proposalId").exec();
       if (stakes.length == 0) {
         throw { statusCode: 404, message: 'No stake found!' };
       } else {

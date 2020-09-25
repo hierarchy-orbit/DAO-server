@@ -21,7 +21,7 @@ export class BlockChainFunctions {
         '0x231DCab22B8E1BC8c3CA604731880F3B49E70371',
         'pending',
       );
-      // const gasPrices = await this.getCurrentGasPrices();
+      const gasPrices = await this.getCurrentGasPrices();
       const transaction = {
         to: '0x231DCab22B8E1BC8c3CA604731880F3B49E70371',
         from: '0x231DCab22B8E1BC8c3CA604731880F3B49E70371',
@@ -43,7 +43,7 @@ export class BlockChainFunctions {
             console.log('RECIPIENT IS =====> ', receipt);
           }
         });
-      return tx.transactionHash;
+      return tx;
     } catch (error) {
       console.log(
         'Error in getTxHash || receiving error in this ====>  ',
