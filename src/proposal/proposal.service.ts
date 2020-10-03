@@ -29,12 +29,8 @@ export class ProposalService {
     private readonly transactionService: TransactionService,
     private readonly userService: UserService,
   ) {
-    console.log("proposall service")
+    console.log('proposall service');
   }
-
-
-
-  
 
   getAllProposals = async () => {
     try {
@@ -202,11 +198,15 @@ export class ProposalService {
         }
       });
 
-      const result = await this.proposalModel.findByIdAndUpdate(req.params.id, {
-        $push: {
-          votes: { date: Date.now(), email: req.body.email },
-        }},
-        { runValidators: true, new: true });
+      const result = await this.proposalModel.findByIdAndUpdate(
+        req.params.id,
+        {
+          $push: {
+            votes: { date: Date.now(), email: req.body.email },
+          },
+        },
+        { runValidators: true, new: true },
+      );
 
       const result2 = await this.userModel.findOneAndUpdate(
         { email: req.body.email },
@@ -353,6 +353,96 @@ export class ProposalService {
       return result;
     } catch (err) {
       throw { statusCode: 400, message: err.message };
+    }
+  };
+
+  updateProposal = async req => {
+    try {
+      console.log('in update service');
+      console.log('params id', req.params.id);
+      console.log('body', req.body);
+
+      const proposal = await this.proposalModel.findById(req.params.id);
+      if (!proposal) {
+        throw { statusCode: 404, message: 'Proposal not found!' };
+      }
+      console.log('status', proposal.status);
+      if (proposal.status != 'Pending') {
+        throw {
+          statusCode: 400,
+          message:
+            'Proposal can only be update before admin approves it (status pending)',
+        };
+      }
+      const user = await this.userModel.findOne({
+        numioAddress: req.body.numioAddress,
+      });
+      if (!user) {
+        throw {
+          statusCode: 404,
+          message: 'User with provided numioAddress doesnot exist',
+        };
+      }
+      console.log('user.numioAddress ',  user.numioAddress);
+      console.log("req.body.numioAddress", req.body.numioAddress)
+      if (user.numioAddress != proposal.numioAddress) {
+        throw { statusCode: 401, message: 'Unauthorized!' };
+      }
+      const updateProposal = await this.proposalModel.findByIdAndUpdate(
+        proposal._id,
+        {
+          budget: req.body.proposal.budget,
+          name: req.body.proposal.name,
+          description: req.body.proposal.description,
+          milestone: req.body.proposal.milestone,
+          // collateral: req.body.proposal.collateral,
+        },
+        { runValidators: true, new: true },
+      );
+      console.log('updateProposal ', updateProposal);
+      return updateProposal;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  deleteProposal = async req => {
+    try {
+      console.log('in delete service');
+      console.log('params', req.params);
+
+      const proposal = await this.proposalModel.findById(req.params.id);
+      if (!proposal) {
+        throw { statusCode: 404, message: 'Proposal not found!' };
+      }
+      console.log('status', proposal.status);
+      if (proposal.status != 'Pending' && proposal.status != 'Rejected') {
+        throw {
+          statusCode: 400,
+          message:
+            'Proposal can only be deleted before admin approves it (status pending)',
+        };
+      }
+      const user = await this.userModel.findOne({
+        numioAddress: req.body.numioAddress,
+      });
+      console.log('user is ', user);
+      if (!user) {
+        throw {
+          statusCode: 404,
+          message: 'User with provided numioAddress doesnot exist',
+        };
+      }
+      if (user.numioAddress != proposal.numioAddress) {
+        throw { statusCode: 401, message: 'Unauthorized!' };
+      }
+      const deletedProposal = await this.proposalModel.findOneAndDelete({
+        _id: proposal._id,
+      });
+      console.log('deletedProposal ', deletedProposal);
+      return deletedProposal;
+    } catch (err) {
+      throw err;
     }
   };
 }

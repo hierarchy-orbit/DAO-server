@@ -215,4 +215,34 @@ export class ProposalController {
       });
     }
   }
+
+     // Here we UPDATE a proposals in the database by Id
+     @Put('/updateProposal/:id')
+     async updateProposal(@Req() req: Request, @Res() res: Response) {
+       try {
+         console.log("in delete")
+         const result = await this.ProposalService.updateProposal(req);
+         res.status(200).send({ responseCode: 200, result: result });
+       } catch (err) {
+         res.status(err.statusCode).send({
+           responseCode: err.statusCode,
+           result: err.message,
+         });
+       }
+     }
+
+    // Here we DELETE a proposals in the database by Id
+  @Delete('/singleProposal/:id')
+  async deleteProposal(@Req() req: Request, @Res() res: Response) {
+    try {
+      console.log("in delete")
+      const result = await this.ProposalService.deleteProposal(req);
+      res.status(200).send({ responseCode: 200, result: result });
+    } catch (err) {
+      res.status(err.statusCode).send({
+        responseCode: err.statusCode,
+        result: err.message,
+      });
+    }
+  }
 }
