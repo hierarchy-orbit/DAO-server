@@ -108,8 +108,8 @@ export class ProposalController {
         });
       }
     } catch (err) {
-      res.status(400).send({
-        responseCode: 400,
+      res.status(err.statusCode|400).send({
+        responseCode: err.statusCode,
         result: err,
       });
     }

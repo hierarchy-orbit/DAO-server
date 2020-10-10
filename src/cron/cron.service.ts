@@ -87,13 +87,22 @@ export class CronService {
               'updating proposal status to Accepted',
               votingProposals[i].name,
             );
+            let completionDays=0,estCompletionDate;
+            for(let t=0;t<votingProposals[i].milestone.length;t++){
+              completionDays+=Number(votingProposals[i].milestone[t].days);
+            }
+            estCompletionDate=moment(utcDate)
+            .add(completionDays, 'days')
+            .format();
+
             await this.proposalModel.findByIdAndUpdate(
               votingProposals[i]._id,
               {
-                $set: { status: 'Accepted' },
+                $set: { status: 'Accepted' ,estCompletionDate},
               },
               { runValidators: true, new: true },
             );
+            
             votingProposals.splice(i, 1);
             i--;
           } else if (

@@ -9,6 +9,7 @@ export const ProposalSchema = new Schema({
   milestone: { type: Array, required: true },
   votingDate: { type: Date },
   expirationDate: { type: Date },
+  estCompletionDate:{type:Date},
   stake: [],
   votes: [],
   minimumUpvotes: { type: Number },

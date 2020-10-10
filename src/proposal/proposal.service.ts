@@ -112,6 +112,11 @@ export class ProposalService {
   updateProposalStatus = async (id, status) => {
     try {
       let Attributes = [];
+      const proposal = await this.proposalModel.findById(id);
+
+      if (!proposal) {
+        throw { statusCode: 404, message: 'Proposal Not Found' };
+      }
       if (status === 'UpVote') {
         Attributes = await this.DAOAttributesModel.find().exec();
         console.log('Attributes', Attributes.length);
@@ -130,6 +135,29 @@ export class ProposalService {
           },
           { runValidators: true, new: true },
         );
+        return result;
+      } else if (status === 'Accepted') {
+        console.log("in here 1")
+        // console.log("proposal is" , proposal)
+        let completionDays=0, estCompletionDate;
+        for (let t = 0; t < proposal.milestone.length; t++) {
+          console.log("typesss of milestone days",typeof Number(proposal.milestone[t].days) )
+          completionDays += Number(proposal.milestone[t].days);
+        }
+        console.log("in here 2")
+        console.log("completion datas calculated",completionDays)
+        estCompletionDate = moment(Date.now())
+          .add(completionDays, 'days')
+          .format();
+          console.log("in here 3")
+        const result = await this.proposalModel.findByIdAndUpdate(
+          id,
+          {
+            $set: { status: 'Accepted', estCompletionDate },
+          },
+          { runValidators: true, new: true },
+        );
+      console.log("in here 4")
         return result;
       }
 
@@ -383,8 +411,8 @@ export class ProposalService {
           message: 'User with provided numioAddress doesnot exist',
         };
       }
-      console.log('user.numioAddress ',  user.numioAddress);
-      console.log("req.body.numioAddress", req.body.numioAddress)
+      console.log('user.numioAddress ', user.numioAddress);
+      console.log('req.body.numioAddress', req.body.numioAddress);
       if (user.numioAddress != proposal.numioAddress) {
         throw { statusCode: 401, message: 'Unauthorized!' };
       }
