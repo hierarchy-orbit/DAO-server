@@ -384,6 +384,55 @@ export class ProposalService {
     }
   };
 
+  updateProposalEstCompleteDateAndGitHubLink = async req => {
+    try {
+      console.log('in updateProposalEstCompleteDateAndGitHubLink service');
+      console.log('params id', req.params.id);
+      console.log('body', req.body);
+
+      const proposal = await this.proposalModel.findById(req.params.id);
+      if (!proposal) {
+        throw { statusCode: 404, message: 'Proposal not found!' };
+      }
+      // console.log('status', proposal.status);
+      // if (proposal.status != 'Pending') {
+      //   throw {
+      //     statusCode: 400,
+      //     message:
+      //       'Proposal can only be update before admin approves it (status pending)',
+      //   };
+      // }
+      const user = await this.userModel.findOne({
+        numioAddress: req.body.numioAddress,
+      });
+      if (!user) {
+        throw {
+          statusCode: 404,
+          message: 'User with provided numioAddress doesnot exist',
+        };
+      }
+      console.log('user.numioAddress ', user.numioAddress);
+      console.log('req.body.numioAddress', req.body.numioAddress);
+      if (user.numioAddress != proposal.numioAddress) {
+        throw { statusCode: 401, message: 'Unauthorized!' };
+      }
+      const updateProposal = await this.proposalModel.findByIdAndUpdate(
+        proposal._id,
+        {
+          githubLink:req.body.githubLink,
+          estCompletionDate:req.body.estCompletionDate
+          // collateral: req.body.proposal.collateral,
+        },
+        { runValidators: true, new: true },
+      );
+      console.log('updateProposal ', updateProposal);
+      return updateProposal;
+    } catch (err) {
+      console.log("------------ ",err,"-----")
+      throw {message:err.message,statusCode:400};
+    }
+  };
+
   updateProposal = async req => {
     try {
       console.log('in update service');

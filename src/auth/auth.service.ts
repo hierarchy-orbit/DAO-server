@@ -126,9 +126,15 @@ export class AuthService {
   }
   async loginWithMetaMask(req) {
     try {
-      const userExist = await this.userModel.findOne({
+      let userExist = await this.userModel.findOne({
         numioAddress: req.body.Address,
       });
+
+      if(!userExist) {
+        userExist= await this.userModel.findOne({
+          email: req.body.email,
+        });
+      } 
       console.log('req.body', req.body);
       console.log('userExist', userExist);
 
@@ -176,7 +182,7 @@ export class AuthService {
         return {
           signInSuccess: false,
           alreadyRegistered:
-            'User with the current wallet address already exists!',
+            'User with the current wallet address or email already exists!',
         };
       }
 
