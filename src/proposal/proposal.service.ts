@@ -57,15 +57,15 @@ export class ProposalService {
         throw { statusCode: 404, message: 'User not found' };
       }
 
-      const BCF = new BlockChainFunctions();
-      const TxHash = await BCF.getTxHash();
+      // const BCF = new BlockChainFunctions();
+      // const TxHash = await BCF.getTxHash();
 
-      if (!TxHash) {
-        throw {
-          statusCode: 400,
-          message: 'Empty transaction Hash from server!',
-        };
-      }
+      // if (!TxHash) {
+      //   throw {
+      //     statusCode: 400,
+      //     message: 'Empty transaction Hash from server!',
+      //   };
+      // }
       const status = 'Incomplete';
       for (let i = 0; i < req.milestone.length; i++) {
         req.milestone[i].status = status;
@@ -87,7 +87,7 @@ export class ProposalService {
         throw { statusCode: 404, message: 'Proposal not created' };
       }
       const createdTransaction = await this.transactionService.createTransaction(
-        TxHash.transactionHash,
+        req.body.txHash,
         'Proposal',
         user.numioAddress,
         createdProposal._id,
