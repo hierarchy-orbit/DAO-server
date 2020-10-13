@@ -94,6 +94,7 @@ export class AuthService {
           proposalStake: createdUser.proposalStake,
           proposalVote: createdUser.proposalVote,
           profileImage: resp.data.data.userInformation.profileImage,
+          createdAt: createdUser.createdAt,
           token,
         };
         console.log('userrrrrrrrr ', user);
@@ -116,6 +117,7 @@ export class AuthService {
         proposalStake: userExist.proposalStake,
         proposalVote: userExist.proposalVote,
         profileImage: resp.data.data.userInformation.profileImage,
+        createdAt: userExist.createdAt,
         token,
       };
       return user;
@@ -169,6 +171,7 @@ export class AuthService {
             proposalStake: createdUser.proposalStake,
             proposalVote: createdUser.proposalVote,
             profileImage: '',
+            createdAt: createdUser.createdAt,
             token,
           };
           console.log('userrrrrrrrr ', user);
@@ -207,6 +210,7 @@ export class AuthService {
         proposalStake: userExist.proposalStake,
         proposalVote: userExist.proposalVote,
         profileImage: '',
+        createdAt: userExist.createdAt,
         token,
       };
       return { signInSuccess: true, user };
