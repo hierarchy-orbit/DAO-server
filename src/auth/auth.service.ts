@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import jwt = require('jsonwebtoken');
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -44,7 +44,8 @@ export class AuthService {
     try {
       const temp = {
         token: req.body.token,
-        userDetails: ["fullname", "email", "profileImage", "numio_id"]
+        userDetails: ["fullname", "email", "profileImage", "numio_id"],
+        app_secret : process.env.app_secret
       };
       const resp = await numio.verifyToken(temp);
       console.log('response -->', resp.data.data);
@@ -71,7 +72,7 @@ export class AuthService {
         const createdUser = await this.userModel.create(newUser);
         console.log('createdUser', createdUser);
         const token = jwt.sign({ email: email }, process.env.SECRET_KEY, {
-          expiresIn: '5d',
+          expiresIn: '1y',
         });
         if (!token) {
           throw { statusCode: 400, message: 'token not generated!' };
@@ -90,7 +91,7 @@ export class AuthService {
         return user;
       }
       const token = jwt.sign({ email: email }, process.env.SECRET_KEY, {
-        expiresIn: '5d',
+        expiresIn: '1y',
       });
       if (!token) {
         throw { statusCode: 400, message: 'token not generated!' };
