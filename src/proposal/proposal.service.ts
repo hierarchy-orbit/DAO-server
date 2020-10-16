@@ -438,7 +438,7 @@ export class ProposalService {
         throw {
           statusCode: 400,
           message:
-            'Proposal can only be update before admin approves it (status pending)',
+            'Proposal can not be updated !',
         };
       }
       const user = await this.userModel.findOne({
@@ -458,11 +458,24 @@ export class ProposalService {
       const updateProposal = await this.proposalModel.findByIdAndUpdate(
         proposal._id,
         {
-          budget: req.body.proposal.budget,
-          name: req.body.proposal.name,
-          description: req.body.proposal.description,
-          milestone: req.body.proposal.milestone,
-          // collateral: req.body.proposal.collateral,
+          firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    name: req.body.name,
+    country: req.body.country,
+    email: req.body.email,
+    description: req.body.description,
+    githubLink: req.body.githubLink,
+    budget: req.body.budget,
+    purpose: req.body.purpose,
+    importance: req.body.importance,
+    fundsUsage: req.body.fundsUsage,
+    personalExperience: req.body.personalExperience,
+    experiencedYear: req.body.experiencedYear,
+    duration: req.body.duration,
+    collateral: req.body.collateral,
+    reward: req.body.reward,
+    numioAddress: req.body.numioAddress,
+    milestone: req.body.milestone,
         },
         { runValidators: true, new: true },
       );
@@ -487,7 +500,7 @@ export class ProposalService {
         throw {
           statusCode: 400,
           message:
-            'Proposal can only be deleted before admin approves it (status pending)',
+            'Proposal can not be deleted !',
         };
       }
       const user = await this.userModel.findOne({
