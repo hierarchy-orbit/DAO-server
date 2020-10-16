@@ -373,7 +373,7 @@ export class ProposalService {
       throw { statusCode: 400, message: err.message };
     }
   };
-
+ 
   updateProposalEstCompleteDateAndGitHubLink = async req => {
     try {
       console.log('in updateProposalEstCompleteDateAndGitHubLink service');
