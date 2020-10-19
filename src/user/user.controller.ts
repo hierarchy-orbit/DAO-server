@@ -17,7 +17,6 @@ export class UserController {
         result: user,
       });
     } catch (error) {
-      console.log('in catch');
       res.status(error.statusCode).send({
         responseCode: error.statusCode,
         result: error.message,
@@ -44,7 +43,6 @@ export class UserController {
   @Get('/byEmail')
   async getUserByEmail(@Req() req: Request, @Res() res: Response) {
     try {
-      console.log(req.body);
       const user = await this.userService.getUserByEmail(req.body.email);
       res.status(200).send({
         responseCode: 200,
@@ -61,7 +59,6 @@ export class UserController {
   @Get('/:id')
   async getUserById(@Req() req: Request, @Res() res: Response) {
     try {
-      //console.log(req.params.id)
       const user = await this.userService.getUserById(req.params.id);
       res.status(200).send({
         responseCode: 200,
@@ -85,7 +82,6 @@ export class UserController {
         result: user,
       });
     } catch (err) {
-      console.log('Catch 4');
       res.status(err.statusCode).send({
         responseCode: err.statusCode,
         result: err.message,
@@ -103,7 +99,6 @@ export class UserController {
         result: user,
       });
     } catch (err) {
-      console.log('Catch 4');
       res.status(err.statusCode).send({
         responseCode: err.statusCode,
         result: err.message,

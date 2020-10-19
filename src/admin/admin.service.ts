@@ -25,17 +25,13 @@ export class AdminService {
       } else {
         throw { statusCode: 404, message: 'No attributes found!' };
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      throw err;
     }
   }
   async updateAttributes(req) {
     try {
-      console.log('req body ===>', req.body);
-      console.log('req params ===>', req.params.id);
       const user = await this.userModel.findById(req.params.id).exec();
-
-      console.log('user is ===>', user);
       if (!user) {
         throw { statusCode: 404, message: 'No user found!' };
       }
@@ -63,7 +59,6 @@ export class AdminService {
       );
       return updateAttributes;
     } catch (err) {
-      console.log('err is ===>', err);
       throw err;
     }
   }
@@ -71,7 +66,6 @@ export class AdminService {
     try {
       const milestones = [];
       const proposals = await this.proposalModel.find().exec();
-      console.log('proposals are ==> ', proposals);
       for (let i = 0; i < proposals.length; i++) {
         for (let j = 0; j < proposals[i].milestone.length; j++) {
           if (proposals[i].milestone[j].status == 'Pending') {
@@ -85,7 +79,6 @@ export class AdminService {
         throw { statusCode: 404, message: 'No pending milestones found!' };
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

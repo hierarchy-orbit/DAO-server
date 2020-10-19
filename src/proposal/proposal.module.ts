@@ -20,7 +20,7 @@ import { DAOAttributesSchema } from '../admin/admin.model';
       { name: 'User', schema: UserSchema },
       { name: 'Transaction', schema: TransactionSchema },
       { name: 'Stake', schema: StakeSchema },
-      { name: 'DAOAttributes', schema: DAOAttributesSchema }
+      { name: 'DAOAttributes', schema: DAOAttributesSchema },
     ]),
   ],
   controllers: [ProposalController],

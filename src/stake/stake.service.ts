@@ -5,7 +5,6 @@ import { Model } from 'mongoose';
 import { Stake } from './stake.model';
 import { ProposalService } from '../proposal/proposal.service';
 import { TransactionService } from '../transaction/transaction.service';
-import { BlockChainFunctions } from '../web3';
 import { User } from 'src/user/user.model';
 import { Proposal } from 'src/proposal/proposal.model';
 
@@ -25,11 +24,7 @@ export class StakeService {
       const amount = req.body.amount;
       const days = req.body.days;
       const reward = req.body.reward;
-      const TxHash= req.body.TxHash;
-
-      console.log('amount is ', amount);
-      console.log('days is ', days);
-      console.log('PROPOSAL ID IS ===> ', proposalId);
+      const TxHash = req.body.TxHash;
 
       // USER MUST EXIST
 
@@ -42,7 +37,6 @@ export class StakeService {
       if (!userExist) {
         throw { statusCode: 400, message: 'User does not exist' };
       }
-      console.log('user found is ===>', userExist);
 
       // PROPOSAL ID MUST BE VALID
 
@@ -53,7 +47,6 @@ export class StakeService {
       // PROPOSAL MUST EXIST
 
       const proposal = await this.proposalService.getProposalsById(proposalId);
-      console.log('PROPOSAL IS ===> ', proposal);
       if (!proposal) {
         throw {
           statusCode: 404,
@@ -72,7 +65,6 @@ export class StakeService {
 
       // USER SHOULD NOT STAKE TWICE
 
-      console.log(' before hasAlready');
       proposal.stake.some(el => {
         if (el.email == userExist.email) {
           throw {
@@ -84,7 +76,6 @@ export class StakeService {
 
       // MUST PROVIDE AMOUNT AND DAYS
 
-      console.log('Before body check');
       if (!req.body.amount || !req.body.days) {
         throw {
           statusCode: 400,
@@ -92,40 +83,22 @@ export class StakeService {
         };
       }
 
-      // MAKING TRANSACTION
-
-      // console.log(' before BCF');
-      // const BCF = new BlockChainFunctions();
-      // const TxHash = await BCF.getTxHash();
-      // console.log('printing getTx', TxHash);
-      // if (!TxHash) {
-      //   throw {
-      //     statusCode: 400,
-      //     message: 'Empty transaction Hash from server!',
-      //   };
-      // }
-
       // CREATING STAKE DOCUMENT AND SAVING IN DATABASE
-
-      console.log('Before creating Stake');
 
       const newStake = new this.stakeModel({
         amount,
         TxHash,
         days,
         proposalId,
-        reward
+        reward,
       });
-      console.log('newStake IS ====>', newStake);
       const createdStake = await this.stakeModel.create(newStake);
-      console.log('createdStake IS ===> ', createdStake);
 
       // IF STAKE NOT CREATED
 
       if (!createdStake) {
         throw { statusCode: 400, message: 'Cannot Stake' };
       }
-      console.log('Before transaction');
 
       // CREATING TRANSACTION DOCUMENT AND SAVING IN DATABASE
 
@@ -135,8 +108,6 @@ export class StakeService {
         userExist.numioAddress,
         createdStake._id,
       );
-
-      console.log('createdTransaction IS ====> ', createdTransaction);
 
       // UPDATING THE PROPOSAL DOCUMENT IN DATABASE
       const newReward = amount + proposal.reward;
@@ -165,20 +136,21 @@ export class StakeService {
 
       return { updatedUser: updatedUser, updatedProposal: updatedProposal };
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
   async getAllStakes(): Promise<Stake[]> {
     try {
-      const stakes = await this.stakeModel.find().populate("proposalId").exec();
+      const stakes = await this.stakeModel
+        .find()
+        .populate('proposalId')
+        .exec();
       if (stakes.length == 0) {
         throw { statusCode: 404, message: 'No stake found!' };
       } else {
         return stakes;
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -191,7 +163,6 @@ export class StakeService {
         throw { statusCode: 404, message: 'Stake not found' };
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

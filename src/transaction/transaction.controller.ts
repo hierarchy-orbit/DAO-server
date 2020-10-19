@@ -27,7 +27,6 @@ export class TransactionController {
   @Get('/:id')
   async getTransactionById(@Req() req: Request, @Res() res: Response) {
     try {
-      //console.log(req.params.id)
       const transaction = await this.transactionService.getTransactionById(
         req.params.id,
       );
@@ -49,8 +48,6 @@ export class TransactionController {
     @Res() res: Response,
   ) {
     try {
-      console.log(req.params.id);
-      console.log(req.body.TYPE);
       const transactions = await this.transactionService.getTransactionOfCreateProposal(
         req.params.id,
         req.body.TYPE,
@@ -73,8 +70,6 @@ export class TransactionController {
     @Res() res: Response,
   ) {
     try {
-      console.log(req.params.id);
-      console.log(req.body.TYPE);
       const transactions = await this.transactionService.getTransactionsOfStakesOnProposal(
         req.params.id,
       );

@@ -34,8 +34,6 @@ export class ProposalController {
   async postProposal(@Req() req: Request, @Res() res: Response) {
     try {
       const result = await this.ProposalService.postProposal(req.body, res);
-      //console.log('Response --->>', result._id);
-      // console.log(req.body);
       res.status(200).send({
         responseCode: 200,
         result: result,
@@ -57,7 +55,6 @@ export class ProposalController {
         result: result,
       });
     } catch (err) {
-      //console.log('Hello11', err);
       res.status(400).send({
         statusCode: 400,
         message: err.message,
@@ -108,7 +105,7 @@ export class ProposalController {
         });
       }
     } catch (err) {
-      res.status(err.statusCode|400).send({
+      res.status(err.statusCode | 400).send({
         responseCode: err.statusCode,
         result: err,
       });
@@ -136,11 +133,14 @@ export class ProposalController {
   }
   // Here we get proposals by NUMIOADDRESS whose status is accepted
   @Post('/getByNumioAddressAndProposalStatus')
-  async getProposalByNumioAddressAndProposalStatus(@Req() req: Request, @Res() res: Response) {
+  async getProposalByNumioAddressAndProposalStatus(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     try {
       const result = await this.ProposalService.getProposalByNumioAddressAndProposalStatus(
         req.body.numioAddress,
-        req.body.status
+        req.body.status,
       );
 
       res.status(200).send({
@@ -161,7 +161,6 @@ export class ProposalController {
     try {
       const result = await this.ProposalService.getProposalsByStatus(req);
       if (result.length !== 0) {
-        //console.log(req.body);
         res.status(200).send({
           responseCode: 200,
           result: result,
@@ -218,10 +217,14 @@ export class ProposalController {
 
   // Here we UPDATE a accepted proposal's est. completion date and github link in the database by Id
   @Put('/updateProposalCompleteDateAndGitHubLink/:id')
-  async updateProposalEstCompleteDateAndGitHubLink(@Req() req: Request, @Res() res: Response) {
+  async updateProposalEstCompleteDateAndGitHubLink(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     try {
-      console.log("in delete")
-      const result = await this.ProposalService.updateProposalEstCompleteDateAndGitHubLink(req);
+      const result = await this.ProposalService.updateProposalEstCompleteDateAndGitHubLink(
+        req,
+      );
       res.status(200).send({ responseCode: 200, result: result });
     } catch (err) {
       res.status(err.statusCode).send({
@@ -231,26 +234,24 @@ export class ProposalController {
     }
   }
 
-     // Here we UPDATE a proposals in the database by Id
-     @Put('/updateProposal/:id')
-     async updateProposal(@Req() req: Request, @Res() res: Response) {
-       try {
-         console.log("in delete")
-         const result = await this.ProposalService.updateProposal(req);
-         res.status(200).send({ responseCode: 200, result: result });
-       } catch (err) {
-         res.status(err.statusCode).send({
-           responseCode: err.statusCode,
-           result: err.message,
-         });
-       }
-     }
+  // Here we UPDATE a proposals in the database by Id
+  @Put('/updateProposal/:id')
+  async updateProposal(@Req() req: Request, @Res() res: Response) {
+    try {
+      const result = await this.ProposalService.updateProposal(req);
+      res.status(200).send({ responseCode: 200, result: result });
+    } catch (err) {
+      res.status(err.statusCode).send({
+        responseCode: err.statusCode,
+        result: err.message,
+      });
+    }
+  }
 
-    // Here we DELETE a proposals in the database by Id
+  // Here we DELETE a proposals in the database by Id
   @Delete('/singleProposal/:id')
   async deleteProposal(@Req() req: Request, @Res() res: Response) {
     try {
-      console.log("in delete")
       const result = await this.ProposalService.deleteProposal(req);
       res.status(200).send({ responseCode: 200, result: result });
     } catch (err) {

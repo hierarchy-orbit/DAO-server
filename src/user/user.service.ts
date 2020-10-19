@@ -77,7 +77,6 @@ export class UserService {
         .findOne({ numioAddress: req.params.id })
         .populate('proposalVote')
         .then(prop => {
-          console.log('in then');
           if (prop.proposalVote.length == 0) {
             throw { statusCode: 404, message: 'No Proposal Found' };
           }

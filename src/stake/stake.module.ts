@@ -17,7 +17,7 @@ import { DAOAttributesSchema } from 'src/admin/admin.model';
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([
       { name: 'Transaction', schema: TransactionSchema },
-      { name: 'DAOAttributes', schema: DAOAttributesSchema }
+      { name: 'DAOAttributes', schema: DAOAttributesSchema },
     ]),
   ],
   controllers: [StakeController],

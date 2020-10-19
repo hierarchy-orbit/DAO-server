@@ -31,12 +31,10 @@ export const ProposalSchema = new Schema(
       ],
     },
     githubLink: { type: String, default: '' },
-
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     country: { type: String, required: true },
     email: { type: String, required: true },
-
     purpose: { type: String, required: true },
     importance: { type: String, required: true },
     fundsUsage: { type: String, required: true },
