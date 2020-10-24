@@ -63,13 +63,8 @@ export class ProposalService {
       if (!createdProposal) {
         throw { statusCode: 404, message: 'Proposal not created' };
       }
-      const createdTransaction = await this.transactionService.createTransaction(
-        req.txHash,
-        'Proposal',
-        user.numioAddress,
-        createdProposal._id,
-      );
-      return { createdProposal, createdTransaction };
+
+      return createdProposal;
     } catch (err) {
       throw err.message;
     }

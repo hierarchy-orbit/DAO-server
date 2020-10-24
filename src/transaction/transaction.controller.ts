@@ -1,11 +1,29 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Controller, Req, Res, Get } from '@nestjs/common';
+import { Controller, Req, Res, Get,Post } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { Request, Response } from 'express';
 
 @Controller('transaction')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
+
+  // Here we create a new transaction
+  @Post('/')
+  async addTransaction(@Req() req: Request, @Res() res: Response) {
+    try {
+      const result = await this.transactionService.createTransaction(req.body.TxHash, req.body.type, req.body.numioAddress, req.body.Id);
+      res.status(200).send({
+        responseCode: 200,
+        result: result,
+      });
+    } catch (error) {
+      res.status(400).send({
+        responseCode: 400,
+        result: error.message,
+      });
+    }
+  }
+
 
   // Here we get all the transactions
   @Get('/')
