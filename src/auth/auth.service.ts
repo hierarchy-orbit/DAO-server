@@ -82,6 +82,7 @@ export class AuthService {
           profileImage: resp.data.data.userInformation.profileImage,
           createdAt: createdUser.createdAt,
           token,
+          loginWith:"numio"
         };
         return user;
       }
@@ -103,6 +104,7 @@ export class AuthService {
         profileImage: resp.data.data.userInformation.profileImage,
         createdAt: userExist.createdAt,
         token,
+        loginWith:"numio"
       };
       return user;
     } catch (error) {
@@ -150,6 +152,7 @@ export class AuthService {
             profileImage: '',
             createdAt: createdUser.createdAt,
             token,
+            loginWith:"metaMask"
           };
           return { signInSuccess: true, user };
         }
@@ -187,6 +190,7 @@ export class AuthService {
         profileImage: '',
         createdAt: userExist.createdAt,
         token,
+        loginWith:"metaMask"
       };
       return { signInSuccess: true, user };
     } catch (error) {

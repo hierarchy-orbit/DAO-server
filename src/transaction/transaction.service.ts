@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Stake } from '../stake/stake.model';
 import { User } from 'src/user/user.model';
+import { Proposal } from 'src/proposal/proposal.model';
 
 @Injectable()
 export class TransactionService {
@@ -13,9 +14,19 @@ export class TransactionService {
     private readonly transactionModel: Model<Transaction>,
     @InjectModel('Stake') private readonly stakeModel: Model<Stake>,
     @InjectModel('User') private readonly userModel: Model<User>,
+    @InjectModel('Proposal') private readonly proposalModel: Model<Proposal>,
   ) {}
   async createTransaction(TxHash, type, numioAddress, Id) {
     try {
+      // console.log("req.body",req.body)
+      const user = await this.userModel.findOne({ numioAddress }).exec();
+      if (!user) {
+        throw { statusCode: 404, message: 'User not found' };
+      }
+      const proposal = await this.proposalModel.findById(Id);
+      if (!proposal) {
+        throw { statusCode: 404, message: 'Proposal not found' };
+      }
       let newTransaction;
       if (type == 'Proposal') {
         newTransaction = await this.transactionModel({
@@ -38,6 +49,7 @@ export class TransactionService {
       );
       return createdTransaction;
     } catch (error) {
+      console.log('error',error)
       throw error;
     }
   }
