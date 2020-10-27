@@ -17,16 +17,22 @@ export class CronService {
   }
 
   @Cron('1 0 0 5 * *')
-  handleCron() {
+  votingTimeEnd() {
     console.log('cron job is running,calculating voting results');
-    this.votingResultCalculation({ body: { status: 'Voting' } });
+    this.votingResultCalculation({ body: { votingStatus: true } });
+  }
+
+  @Cron('1 0 5 2 * *')
+  votingDateArrival() {
+    console.log('cron job is running, voting starts now');
+    this.votingTimeStart({ body: { status: "Voting" } });
   }
 
   votingResultCalculation = async req => {
     //   let setSchedule = '0 0 0 4 * *';
     try {
       const votingProposals = await this.proposalModel.find({
-        status: req.body.status,
+        votingStatus: req.body.votingStatus,
       });
       if (votingProposals.length === 0) {
         throw {
@@ -177,4 +183,43 @@ export class CronService {
       throw err;
     }
   };
+
+  votingTimeStart = async req => {
+    try{
+      console.log("req.body is ", req.body)
+      const votingProposals = await this.proposalModel.find({
+        status: req.body.status,
+      });
+      console.log("voting proposals are ", votingProposals)
+      if (votingProposals.length === 0) {
+        throw {
+          statusCode: 404,
+          message: `No proposal with voting status ${req.body.status} found`,
+        };
+      }
+
+      let serverDate= moment(Date.now()).format();
+      console.log("server Date is ", serverDate)
+
+      for(let i=0; i < votingProposals.length ; i++){
+        console.log(votingProposals[i].name, " and date ",moment(votingProposals[i].votingDate).format() , " and server date" , serverDate )
+        if(moment(votingProposals[i].votingDate).format() < serverDate){
+          await this.proposalModel.findByIdAndUpdate(
+            votingProposals[i]._id,
+            {
+              $set: { votingStatus: true },
+            },
+            { runValidators: true, new: true },
+          ).then((proposal:any)=>{
+            console.log("updated proposal " , proposal.name , " with voting date " , proposal.votingDate)
+          }).catch((err)=>{
+            console.log("error updating proposal " , err)
+          })
+        }
+      }
+    }
+    catch(err){
+      throw err;
+    }
+  }
 }

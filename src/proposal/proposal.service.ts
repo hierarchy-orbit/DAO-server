@@ -174,6 +174,18 @@ export class ProposalService {
       if (proposal.status !== 'UpVote') {
         throw { statusCode: 400, message: 'Proposal cannot be upvoted' };
       }
+      let serverDate= moment(Date.now()).format();
+      if(moment(proposal.expirationDate).format() < serverDate ){
+        
+        await this.proposalModel.findByIdAndUpdate(
+          proposal._id,
+          {
+            $set: { status: 'Rejected' },
+          },
+          { runValidators: true, new: true },
+        );
+        throw { statusCode: 400, message: 'Proposal cannot be upvoted since it is expired' };
+      }
 
       const checkUserExist = await this.userModel.find({
         email: req.body.email,
@@ -235,8 +247,28 @@ export class ProposalService {
 
   getProposalsByStatus = async req => {
     try {
-      const result = await this.proposalModel.find({ status: req.body.status });
-      return result;
+      let proposals = await this.proposalModel.find({ status: req.body.status });
+      
+      if(!proposals || proposals?.length==0){
+        throw{statusCode:404,message:"No Proposal Found"}
+      }
+      if(req.body.status=="UpVote"){
+        let serverDate = moment(Date.now()).format();
+
+        for(let i=0 ; i < proposals.length; i++){
+          if(moment(proposals[i].expirationDate).format() < serverDate){
+            await this.proposalModel.findByIdAndUpdate(
+              proposals[i]._id,
+              {
+                $set: { status: 'Rejected' },
+              },
+              { runValidators: true, new: true },
+            );
+          }
+        }
+        proposals = await this.proposalModel.find({ status: req.body.status });
+      }
+      return proposals;
     } catch (err) {
       throw err;
     }
