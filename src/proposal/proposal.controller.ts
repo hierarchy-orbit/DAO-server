@@ -7,27 +7,27 @@ import { Controller, Get, Post, Req, Res, Delete, Put } from '@nestjs/common';
 export class ProposalController {
   constructor(private readonly ProposalService: ProposalService) {}
   // Here we get ALL proposals from the database
-  @Get()
-  async getAllProposals(@Req() req: Request, @Res() res: Response) {
-    try {
-      const result = await this.ProposalService.getAllProposals();
-      if (result.length == 0) {
-        res
-          .status(400)
-          .send({ responseCode: 400, result: 'No Proposals Found' });
-      } else {
-        res.status(200).send({
-          responseCode: 200,
-          result: result,
-        });
-      }
-    } catch (err) {
-      res.status(400).send({
-        responseCode: 400,
-        result: err,
-      });
-    }
-  }
+  // @Get()
+  // async getAllProposals(@Req() req: Request, @Res() res: Response) {
+  //   try {
+  //     const result = await this.ProposalService.getAllProposals();
+  //     if (result.length == 0) {
+  //       res
+  //         .status(400)
+  //         .send({ responseCode: 400, result: 'No Proposals Found' });
+  //     } else {
+  //       res.status(200).send({
+  //         responseCode: 200,
+  //         result: result,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     res.status(400).send({
+  //       responseCode: 400,
+  //       result: err,
+  //     });
+  //   }
+  // }
 
   // Here post a NEW proposal
   @Post('')

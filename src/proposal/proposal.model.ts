@@ -14,6 +14,7 @@ export const ProposalSchema = new Schema(
     stake: [],
     votes: [],
     minimumUpvotes: { type: Number },
+    votingStatus: {type:Boolean, default:false},
     numioAddress: { type: String, required: true },
     collateral: { type: Number, required: true },
     reward: { type: Number, required: true },
