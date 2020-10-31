@@ -12,21 +12,19 @@ const moment = require('moment');
 @Injectable()
 export class CronService {
   constructor(@InjectModel('Proposal') private readonly proposalModel: Model<Proposal>,) {
-    
-    console.log('hereeee');
   }
 
-  @Cron('1 0 0 5 * *')
-  votingTimeEnd() {
-    console.log('cron job is running,calculating voting results');
-    this.votingResultCalculation({ body: { votingStatus: true } });
-  }
+  // @Cron('1 0 0 5 * *')
+  // votingTimeEnd() {
+  //   console.log('cron job is running,calculating voting results');
+  //   this.votingResultCalculation({ body: { votingStatus: true } });
+  // }
 
-  @Cron('1 0 5 2 * *')
-  votingDateArrival() {
-    console.log('cron job is running, voting starts now');
-    this.votingTimeStart({ body: { status: "Voting" } });
-  }
+  // @Cron('1 0 5 2 * *')
+  // votingDateArrival() {
+  //   console.log('cron job is running, voting starts now');
+  //   this.votingTimeStart({ body: { status: "Voting" } });
+  // }
 
   votingResultCalculation = async req => {
     //   let setSchedule = '0 0 0 4 * *';

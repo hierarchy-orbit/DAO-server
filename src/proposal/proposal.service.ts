@@ -29,10 +29,24 @@ export class ProposalService {
 
   getAllProposals = async () => {
     try {
-      let date = new Date();
-      const result = await this.proposalModel.find();
-      if (result.length !== 0) {
-        return result;
+      let proposals = await this.proposalModel.find();
+      let serverDate= moment(Date.now()).format();
+      for(let i=0 ; i < proposals.length; i++){
+
+        if(proposals[i].status == "UpVote" && moment(proposals[i].expirationDate).format() < serverDate){
+          await this.proposalModel.findByIdAndUpdate(
+            proposals[i]._id,
+            {
+              $set: { status: 'Rejected' },
+            },
+            { runValidators: true, new: true },
+          );
+        }
+      }
+      proposals = await this.proposalModel.find();
+
+      if (proposals.length !== 0) {
+        return proposals;
       } else {
         throw 'No proposal found';
       }
