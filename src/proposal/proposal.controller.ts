@@ -241,7 +241,8 @@ export class ProposalController {
       const result = await this.ProposalService.updateProposal(req);
       res.status(200).send({ responseCode: 200, result: result });
     } catch (err) {
-      res.status(err.statusCode).send({
+      console.log("err",err)
+      res.status(400).send({
         responseCode: err.statusCode,
         result: err.message,
       });

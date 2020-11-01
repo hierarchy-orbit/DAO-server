@@ -438,6 +438,7 @@ export class ProposalService {
       if (user.numioAddress != proposal.numioAddress) {
         throw { statusCode: 401, message: 'Unauthorized!' };
       }
+      console.log("req.body is " , req.body)
       const updateProposal = await this.proposalModel.findByIdAndUpdate(
         proposal._id,
         {
@@ -451,17 +452,18 @@ export class ProposalService {
           budget: req.body.budget,
           purpose: req.body.purpose,
           importance: req.body.importance,
-          fundsUsage: req.body.fundsUsage,
-          personalExperience: req.body.personalExperience,
+          // fundsUsage: req.body.fundsUsage,
+          // personalExperience: req.body.personalExperience,
           experiencedYear: req.body.experiencedYear,
           duration: req.body.duration,
           collateral: req.body.collateral,
-          reward: req.body.reward,
+          // reward: req.body.reward,
           numioAddress: req.body.numioAddress,
           milestone: req.body.milestone,
         },
         { runValidators: true, new: true },
       );
+      console.log("updated",updateProposal)
       return updateProposal;
     } catch (err) {
       throw err;
