@@ -17,7 +17,7 @@ export const ProposalSchema = new Schema(
     votingStatus: {type:Boolean, default:false},
     numioAddress: { type: String, required: true },
     collateral: { type: Number, required: true },
-    reward: { type: Number, required: true },
+    reward: { type: Number, required: false },
     status: {
       type: String,
       default: 'Pending',
