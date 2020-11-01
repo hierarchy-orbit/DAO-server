@@ -14,6 +14,7 @@ import { BlockChainFunctions } from '../web3';
 import { async } from 'rxjs/internal/scheduler/async';
 import { DAOAttributes } from '../admin/admin.model';
 import { EDESTADDRREQ } from 'constants';
+import { Cron } from '@nestjs/schedule';
 const axios = require('axios');
 const moment = require('moment');
 
@@ -29,8 +30,14 @@ export class ProposalService {
     private readonly userService: UserService,
   ) {}
 
+  @Cron('1 0 0 4 * *')
+  handleCron() {
+    console.log("cron job is running,calculating voting results")
+    this.votingResultCalculation({ body: { status: 'Voting' } });
+  }
+  
   votingResultCalculation = async req => {
-    //   let setSchedule = '0 0 4 * *';
+    //   let setSchedule = '0 0 0 4 * *';
     try {
       const votingProposals = await this.proposalModel.find({
         status: req.body.status,
@@ -43,30 +50,31 @@ export class ProposalService {
       }
 
       let utcDate;
-
-      await axios
-        .get('http://worldtimeapi.org/api/timezone/America/New_York')
-        .then(value => {
-          // utcDate=moment(value.data.utc_datetime).format();
-        })
-        .catch(err => {
-          console.log('Error occured is ', err);
-        });
+      let resultDate;
+      // await axios
+      //   .get('http://worldtimeapi.org/api/timezone/America/New_York')
+      //   .then(value => {
+      //     utcDate=moment(value.data.utc_datetime).format();
+      //   })
+      //   .catch(err => {
+      //     console.log('Error occured is ', err);
+      //   });
 
       utcDate = moment(Date.now()).format();
+      resultDate = moment(votingProposals[0].votingDate)
+      .add(3, 'days')
+      .format()
 
+      console.log('votingDate is',new Date(votingProposals[0].votingDate))
       console.log(
         'resultDate is',
-        moment(votingProposals[0].votingDate)
-          .add(3, 'days')
-          .format(),
+        resultDate
       );
       console.log('utcDate is', utcDate);
 
       console.log(
         'comparison',
-        moment(votingProposals[0].votingDate).format() < utcDate,
-      );
+        resultDate < utcDate);
 
       let totalVotes = 0;
 
@@ -131,7 +139,9 @@ export class ProposalService {
 
   getAllProposals = async () => {
     try {
-      this.votingResultCalculation({ body: { status: 'Voting' } });
+      let date = new Date();
+     console.log("dateee",moment(date).format('YYYY-MM-01, 00:00:00'))
+      // this.votingResultCalculation({ body: { status: 'Voting' } });
       const result = await this.proposalModel.find();
       if (result.length !== 0) {
         return result;
@@ -316,14 +326,14 @@ export class ProposalService {
 
         console.log(date.getDate());
         if (date.getDate() < 16) {
-          date = moment()
+          date = moment(Date.now())
             .add(1, 'M')
-            .format('YYYY-MM-01');
+            .format('YYYY-MM-01, 00:00:00');
           console.log('hellow oirkds');
         } else {
-          date = moment()
+          date = moment(Date.now())
             .add(2, 'M')
-            .format('YYYY-MM-01');
+            .format('YYYY-MM-01, 00:00:00');
         }
 
         console.log('date now', date);

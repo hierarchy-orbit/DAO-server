@@ -16,9 +16,12 @@ import { LoggerMiddleware } from './loggerMiddleware';
 import { TransactionModule } from './transaction/transaction.module';
 import { StakeModule } from './stake/stake.module';
 import { AdminModule } from './admin/admin.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    ScheduleModule.forRoot(),
     MongooseModule.forRoot(process.env.DATABASE_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
