@@ -51,24 +51,14 @@ export class ProposalService {
   postProposal = async (req, res) => {
     try {
       console.log(req.numioAddress);
+      console.log('check milestone', req);
       const user = await this.userService.getUserById(req.numioAddress);
-
       if (!user) {
         throw { statusCode: 404, message: 'User not found' };
       }
-
-      // const BCF = new BlockChainFunctions();
-      // const TxHash = await BCF.getTxHash();
-
-      // if (!TxHash) {
-      //   throw {
-      //     statusCode: 400,
-      //     message: 'Empty transaction Hash from server!',
-      //   };
-      // }
-      const status = 'Incomplete';
+      const statusTest = 'Incomplete';
       for (let i = 0; i < req.milestone.length; i++) {
-        req.milestone[i].status = status;
+        req.milestone[i].status = statusTest;
       }
       const Attributes = await this.DAOAttributesModel.find().exec();
       console.log('Attributes', Attributes.length);
@@ -80,14 +70,13 @@ export class ProposalService {
         minimumUpvotes: Attributes[0].minimumUpvotes,
       };
       console.log('Data ', data);
-
       const createdProposal = await this.proposalModel.create(data);
       console.log('Created Proposal', createdProposal);
       if (!createdProposal) {
         throw { statusCode: 404, message: 'Proposal not created' };
       }
       const createdTransaction = await this.transactionService.createTransaction(
-        req.body.txHash,
+        req.txHash,
         'Proposal',
         user.numioAddress,
         createdProposal._id,
@@ -95,6 +84,7 @@ export class ProposalService {
       console.log('Transaction', createdTransaction);
       return { createdProposal, createdTransaction };
     } catch (err) {
+      console.log('view erro nor', err);
       throw err.message;
     }
   };
