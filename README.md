@@ -17,7 +17,6 @@ Pheonix-DAO Server repository. The Application allows users to authenticate them
 ## About App
 PhoenixDAO is a truly decentralized, open-source project that covers identity, payments, tokenization, authentication, and storage, alongside a dApp Store which sits at the heart of the Phoenix ecosystem. A core part of the PhoenixDAO strategy is to actively on-board both individual developers and enterprise level corporations to build using the protocols to power their products. This will enhance decentralization, token utility and the overall ecosystem.
 
-
 * Functions/Modules 
   - Admin
   - Auth
