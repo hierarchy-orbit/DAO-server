@@ -18,6 +18,7 @@ import { StakeModule } from './stake/stake.module';
 import { AdminModule } from './admin/admin.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
+import { NodemailerService } from './nodemailer/nodemailer.service'
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { CronModule } from './cron/cron.module';
     CronModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, NodemailerService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

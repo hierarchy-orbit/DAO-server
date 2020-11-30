@@ -91,7 +91,7 @@ export class ProposalController {
     try {
       const result = await this.ProposalService.updateProposalStatus(
         req.params.id,
-        req.body.status,
+        req
       );
       if (result) {
         res.status(200).send({

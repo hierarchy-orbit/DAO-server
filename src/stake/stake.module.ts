@@ -10,6 +10,7 @@ import { TransactionSchema } from '../transaction/transaction.model';
 import { UserService } from '../user/user.service';
 import { UserSchema } from '../user/user.model';
 import { DAOAttributesSchema } from 'src/admin/admin.model';
+import { NodemailerService } from '../nodemailer/nodemailer.service'
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Stake', schema: StakeSchema }]),
@@ -21,6 +22,6 @@ import { DAOAttributesSchema } from 'src/admin/admin.model';
     ]),
   ],
   controllers: [StakeController],
-  providers: [StakeService, ProposalService, TransactionService, UserService],
+  providers: [StakeService, ProposalService, TransactionService, UserService, NodemailerService],
 })
 export class StakeModule {}

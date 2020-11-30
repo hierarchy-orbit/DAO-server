@@ -12,6 +12,7 @@ import { UserService } from '../user/user.service';
 import { async } from 'rxjs/internal/scheduler/async';
 import { DAOAttributes } from '../admin/admin.model';
 import { EDESTADDRREQ } from 'constants';
+import { NodemailerService } from '../nodemailer/nodemailer.service'
 
 const axios = require('axios');
 const moment = require('moment');
@@ -25,6 +26,7 @@ export class ProposalService {
     private readonly DAOAttributesModel: Model<DAOAttributes>,
     private readonly transactionService: TransactionService,
     private readonly userService: UserService,
+    private readonly NodemailerService: NodemailerService
   ) {}
 
   getAllProposals = async () => {
@@ -93,7 +95,12 @@ export class ProposalService {
       throw 'No Proposal Found';
     }
   };
-  updateProposalStatus = async (id, status) => {
+  updateProposalStatus = async (id, req) => {
+    const {status, reasonForRejecting} = req.body;
+    if(status == 'Rejected'){
+      const emailResult = await this.NodemailerService.sendEmail(req);
+      return emailResult
+    }
     try {
       let Attributes = [];
       const proposal = await this.proposalModel.findById(id);
@@ -325,6 +332,8 @@ export class ProposalService {
         result.milestone[req.body.index].status = req.body.status;
         result.markModified('milestone');
         result.save();
+        const emailResult = await this.NodemailerService.sendEmail(req);
+      console.log('Email sent',emailResult)
       }
       return result;
     } catch (err) {
