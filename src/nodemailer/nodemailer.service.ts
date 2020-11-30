@@ -49,7 +49,6 @@ export class NodemailerService {
         `
         <div style=" background-color: white" >
         <h1 style="font-style: 100%" > PHOENIX-DAO </h1>
-        // <a href="#"><img src={https://phoenix-dao-frontend-dev.herokuapp.com/static/media/Group%20230.f227b8d5.svg} alt="PHNX-DAO" style="width:42px;height:42px;"/></a>
         <hr />
         <br />
         <h3>Proposal Name: <span> ${req.body.proposalName} </span> </h3>
