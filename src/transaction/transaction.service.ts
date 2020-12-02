@@ -18,17 +18,19 @@ export class TransactionService {
   ) {}
   async createTransaction(TxHash, type, numioAddress, Id) {
     try {
-      // console.log("req.body",req.body)
+      console.log('req.body', Id, ', type : ', type);
       const user = await this.userModel.findOne({ numioAddress }).exec();
       if (!user) {
         throw { statusCode: 404, message: 'User not found' };
       }
-      const proposal = await this.proposalModel.findById(Id);
-      if (!proposal) {
-        throw { statusCode: 404, message: 'Proposal not found' };
-      }
+
       let newTransaction;
       if (type == 'Proposal') {
+        const proposal = await this.proposalModel.findById(Id);
+        if (!proposal) {
+          throw { statusCode: 404, message: 'Proposal not found' };
+        }
+
         newTransaction = await this.transactionModel({
           TxHash,
           Type: type,
@@ -49,7 +51,7 @@ export class TransactionService {
       );
       return createdTransaction;
     } catch (error) {
-      console.log('error',error)
+      console.log('error', error);
       throw error;
     }
   }
