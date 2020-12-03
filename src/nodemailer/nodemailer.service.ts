@@ -22,6 +22,7 @@ export class NodemailerService {
   constructor() {}
 
   sendEmail = async (req) => {
+    console.log('Working')
     console.log('Request', req)
     console.log('Email -->',req.body)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
