@@ -186,15 +186,19 @@ export class ProposalService {
   };
 
   VoteOnProposal = async (req, res) => {
+    console.log('Status',req.body.status)
     try {
       const proposal = await this.proposalModel.findById(req.params.id);
+      console.log('Proposal', proposal.status)
 
       if (!proposal) {
-        throw { statusCode: 404, message: 'Proposal Not Found' };
+        console.log('In if 1')
+       throw { statusCode: 404, message: 'Proposal Not Found' };
       }
 
       if (proposal.status !== 'UpVote') {
-        throw { statusCode: 400, message: 'Proposal cannot be upvoted' };
+        console.log('In if 2')
+       throw { statusCode: 400, message: 'Proposal cannot be upvoted' };
       }
       let serverDate= moment(Date.now()).format();
       if(moment(proposal.expirationDate).format() < serverDate ){
@@ -206,19 +210,24 @@ export class ProposalService {
           },
           { runValidators: true, new: true },
         );
+        
+        console.log('In if 3')
         throw { statusCode: 400, message: 'Proposal cannot be upvoted since it is expired' };
       }
+      console.log('Hello')    
 
       const checkUserExist = await this.userModel.find({
         email: req.body.email,
       });
       if (checkUserExist.length == 0) {
-        throw { statusCode: 400, message: 'User does not exist' };
+        console.log('In if 4')
+       throw { statusCode: 400, message: 'User does not exist' };
       }
       const check = proposal.votes.some(el => {
         //Here is the name validation (A user cannot vote twice)
         if (el.email == req.body.email) {
-          throw { statusCode: 400, message: 'User cannot vote again' };
+          console.log('In if 5')
+         throw { statusCode: 400, message: 'User cannot vote again' };
         }
       });
 
@@ -240,6 +249,7 @@ export class ProposalService {
       const checkCount = await this.proposalModel.findById(req.params.id);
       const Attributes = await this.DAOAttributesModel.find().exec();
       if (Attributes.length == 0) {
+        console.log('In if 6')
         throw { statusCode: 404, message: 'No attributes found!' };
       }
       if (checkCount.votes.length > result.minimumUpvotes - 1) {
@@ -263,7 +273,8 @@ export class ProposalService {
       }
       return 'Success';
     } catch (err) {
-      throw { statusCode: 400, message: err.message };
+      console.log("check error now",err)
+      throw { statusCode: 400, message: err.message};
     }
   };
 
