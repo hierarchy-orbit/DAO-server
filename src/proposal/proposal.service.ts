@@ -250,6 +250,7 @@ export class ProposalService {
       const Attributes = await this.DAOAttributesModel.find().exec();
       if (Attributes.length == 0) {
         console.log('In if 6')
+        console.log('Here')
         throw { statusCode: 404, message: 'No attributes found!' };
       }
       if (checkCount.votes.length > result.minimumUpvotes - 1) {
