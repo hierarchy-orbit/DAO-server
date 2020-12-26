@@ -42,6 +42,7 @@ export const ProposalSchema = new Schema(
     personalExperience: { type: String, required: false },
     experiencedYear: { type: Number, required: false },
     duration: { type: Number, required: true },
+    userProfession: { type: String, required: true }
   },
   { timestamps: true },
 );

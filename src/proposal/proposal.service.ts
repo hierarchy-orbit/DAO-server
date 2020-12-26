@@ -98,35 +98,47 @@ export class ProposalService {
     }
   };
   updateProposalStatus = async (id, req) => {
+    console.log('REQ ---->',req.body)
+    console.log(1)
     const {status, reasonForRejecting} = req.body;
-    if(status == 'Rejected'){
+    console.log(2)
+    if(req.body.status == 'Rejected'){
       const emailResult = await this.NodemailerService.sendEmail(req);
+      console.log(3)
     }
     try {
       let Attributes = [];
       const proposal = await this.proposalModel.findById(id);
-
+      console.log(4)
       if (!proposal) {
+        console.log(5)
         throw { statusCode: 404, message: 'Proposal Not Found' };
+        
       }
-      if (status === 'UpVote') {
+      console.log('AAAAA')
+      if (req.body.status === 'UpVote') {
+        console.log(989)
         Attributes = await this.DAOAttributesModel.find().exec();
         if (Attributes.length == 0) {
+          console.log(7)
           throw { statusCode: 404, message: 'No attributes found!' };
         }
+        console.log('BBBBB')
         const expirationDate = moment()
           .add(Attributes[0].maxUpvoteDays, 'd')
           .format('YYYY-MM-DD');
-
+        console.group('CCCCCC')
         const result = await this.proposalModel.findByIdAndUpdate(
           id,
           {
-            $set: { status: status, expirationDate: expirationDate },
+            $set: { status: req.body.status, expirationDate: expirationDate },
           },
           { runValidators: true, new: true },
         );
+        console.log(8)
         return result;
-      } else if (status === 'Accepted') {
+      } else if (req.body.status === 'Accepted') {
+        console.log(9)
         let completionDays = 0,
           estCompletionDate;
         for (let t = 0; t < proposal.milestone.length; t++) {
@@ -135,6 +147,7 @@ export class ProposalService {
         estCompletionDate = moment(Date.now())
           .add(completionDays, 'days')
           .format();
+          console.log(10)
         const result = await this.proposalModel.findByIdAndUpdate(
           id,
           {
@@ -144,16 +157,19 @@ export class ProposalService {
         );
         return result;
       }
+      console.log('DDDD')
 
       const result = await this.proposalModel.findByIdAndUpdate(
         id,
         {
-          $set: { status: status },
+          $set: { status: req.body.status },
         },
         { runValidators: true, new: true },
       );
+      console.log(11)
       return result;
     } catch (err) {
+      console.log('----//////',err)
       throw 'Error';
     }
   };
@@ -186,7 +202,7 @@ export class ProposalService {
   };
 
   VoteOnProposal = async (req, res) => {
-    console.log('Status',req.body.status)
+    console.log('Status',req)
     try {
       const proposal = await this.proposalModel.findById(req.params.id);
       console.log('Proposal', proposal.status)
@@ -254,11 +270,13 @@ export class ProposalService {
         throw { statusCode: 404, message: 'No attributes found!' };
       }
       if (checkCount.votes.length > result.minimumUpvotes - 1) {
-        await this.updateProposalStatus(req.params.id, 'Voting');
+        let tempStatus = { status: 'Voting' }
+       await this.updateProposalStatus(req.params.id, tempStatus);
+      // await this.updateProposalStatus(req.params.id, tempStatus)
         let date = new Date();
 
         if (date.getDate() < 16) {
-          date = moment(Date.now())
+          date = moment(Date.now()) 
             .add(1, 'M')
             .format('YYYY-MM-02, 00:00:00');
         } else {
@@ -309,7 +327,9 @@ export class ProposalService {
   };
   changeStatusOfMilestoneByAdmin = async (req, res) => {
     try {
+      console.log(1)
       if (!req.params.id) {
+      console.log(2)
         throw {
           statusCode: 400,
           message: 'Please provide proposal id in params',
@@ -318,30 +338,37 @@ export class ProposalService {
 
       const result = await this.proposalModel.findById(req.params.id);
       if (req.body.index > result.milestone.length) {
+        console.log(3)
         throw {
           statusCode: 400,
           message: 'Index must not be greater then the total milestones',
         };
       }
       if (result.status != 'Accepted') {
+        console.log(4)
         throw { statusCode: 400, message: 'Invalid Status' };
       }
       if (!result) {
+        console.log(5)
         throw { statusCode: 404, message: 'Proposal not found!' };
       }
       if (!req.body.numioAddress) {
+        console.log(6)
         throw { statusCode: 400, message: 'Must Provide Numio Address' };
       }
       const user = await this.userModel.findOne({
         numioAddress: req.body.numioAddress,
       });
       if (!user) {
+        console.log(7)
         throw { statusCode: 400, message: 'User not found' };
       }
       if (user.isAdmin == false) {
+        console.log(8)
         throw { statusCode: 400, message: 'User must be the admin' };
       }
       if (user.isAdmin) {
+        console.log(9)
         result.milestone[req.body.index].status = req.body.status;
         result.markModified('milestone');
         result.save();
@@ -350,6 +377,7 @@ export class ProposalService {
       }
       return result;
     } catch (err) {
+      console.log('Error --->', err.message)
       throw { statusCode: 400, message: err.message };
     }
   };
