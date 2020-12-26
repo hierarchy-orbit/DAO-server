@@ -49,7 +49,7 @@ export class ProposalController {
   @Post('/vote/:id')
   async voteOnProposal(@Req() req: Request, @Res() res: Response) {
     try {
-      console.log('COntroller ---->', req.body)
+      console.log('COntroller ', req.body)
       const result = await this.ProposalService.VoteOnProposal(req, res);
       res.status(200).send({
         statusCode: 200,
