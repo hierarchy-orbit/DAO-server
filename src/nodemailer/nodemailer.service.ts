@@ -24,7 +24,7 @@ export class NodemailerService {
   sendEmail = async (req) => {
     // console.log('Working here')
     // //console.log('Request', req)
-    // console.log('Email -->',req.body)
+    console.log('Email -->',req.body)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
     try{
   
@@ -57,7 +57,6 @@ export class NodemailerService {
           <h3 >Reason for rejecting: ${req.body.reasonForRejecting}</h3>
           <br/>
           <hr />
-          <h3 >Proposal time of creation: ${req.body.createdAt} </h3>
         </div>
         `
         
@@ -67,7 +66,7 @@ export class NodemailerService {
         if (error) {
           console.log('123',error);
         } else {
-          console.log("Email sent: " + info.response);
+          console.log("Email sent: " , info.response);
         }
       });
 

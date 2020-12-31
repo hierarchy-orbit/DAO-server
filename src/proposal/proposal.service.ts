@@ -60,6 +60,7 @@ export class ProposalService {
   };
 
   postProposal = async (req, res) => {
+    console.log('In post proposal')
     try {
       const user = await this.userService.getUserById(req.numioAddress);
       if (!user) {
@@ -98,10 +99,12 @@ export class ProposalService {
     }
   };
   updateProposalStatus = async (id, req) => {
-    console.log('REQ ---->',req.body)
-    console.log(1)
-    const {status, reasonForRejecting} = req.body;
-    console.log(2)
+    console.log('In update proposal status', req)
+   // console.log('REQ ----->',id,req)
+   // console.log('REQ ---->',req.body)
+  //  console.log(1)
+  //  const {status, reasonForRejecting} = req.body;
+  //  console.log(2)
     if(req.body.status == 'Rejected'){
       const emailResult = await this.NodemailerService.sendEmail(req);
       console.log(3)
@@ -109,7 +112,7 @@ export class ProposalService {
     try {
       let Attributes = [];
       const proposal = await this.proposalModel.findById(id);
-      console.log(4)
+    //  console.log(4)
       if (!proposal) {
         console.log(5)
         throw { statusCode: 404, message: 'Proposal Not Found' };
@@ -123,11 +126,11 @@ export class ProposalService {
           console.log(7)
           throw { statusCode: 404, message: 'No attributes found!' };
         }
-        console.log('BBBBB')
+     //   console.log('BBBBB')
         const expirationDate = moment()
           .add(Attributes[0].maxUpvoteDays, 'd')
           .format('YYYY-MM-DD');
-        console.group('CCCCCC')
+     //   console.group('CCCCCC')
         const result = await this.proposalModel.findByIdAndUpdate(
           id,
           {
@@ -202,18 +205,18 @@ export class ProposalService {
   };
 
   VoteOnProposal = async (req, res) => {
-    console.log('Status',req)
+  //  console.log('Status',req)
     try {
       const proposal = await this.proposalModel.findById(req.params.id);
-      console.log('Proposal', proposal.status)
+   //   console.log('Proposal', proposal.status)
 
       if (!proposal) {
-        console.log('In if 1')
+     //   console.log('In if 1')
        throw { statusCode: 404, message: 'Proposal Not Found' };
       }
 
       if (proposal.status !== 'UpVote') {
-        console.log('In if 2')
+    //    console.log('In if 2')
        throw { statusCode: 400, message: 'Proposal cannot be upvoted' };
       }
       let serverDate= moment(Date.now()).format();
@@ -227,22 +230,22 @@ export class ProposalService {
           { runValidators: true, new: true },
         );
         
-        console.log('In if 3')
+    //    console.log('In if 3')
         throw { statusCode: 400, message: 'Proposal cannot be upvoted since it is expired' };
       }
-      console.log('Hello')    
+    //  console.log('Hello')    
 
       const checkUserExist = await this.userModel.find({
         email: req.body.email,
       });
       if (checkUserExist.length == 0) {
-        console.log('In if 4')
+    //    console.log('In if 4')
        throw { statusCode: 400, message: 'User does not exist' };
       }
       const check = proposal.votes.some(el => {
         //Here is the name validation (A user cannot vote twice)
         if (el.email == req.body.email) {
-          console.log('In if 5')
+        //  console.log('In if 5')
          throw { statusCode: 400, message: 'User cannot vote again' };
         }
       });
@@ -265,30 +268,40 @@ export class ProposalService {
       const checkCount = await this.proposalModel.findById(req.params.id);
       const Attributes = await this.DAOAttributesModel.find().exec();
       if (Attributes.length == 0) {
-        console.log('In if 6')
-        console.log('Here')
+   //     console.log('In if 6')
+    //    console.log('Here')
         throw { statusCode: 404, message: 'No attributes found!' };
       }
       if (checkCount.votes.length > result.minimumUpvotes - 1) {
-        let tempStatus = { status: 'Voting' }
+        console.log('In if checkCount', req.body)
+        let tempStatus = { body:{status: 'Voting'} }
        await this.updateProposalStatus(req.params.id, tempStatus);
       // await this.updateProposalStatus(req.params.id, tempStatus)
         let date = new Date();
-
         if (date.getDate() < 16) {
           date = moment(Date.now()) 
-            .add(1, 'M')
-            .format('YYYY-MM-02, 00:00:00');
+          //  .add(1, 'hours')
+          .add(1,'M')
+            .format('YYYY-MM-01');
+            console.log('Date ---->', date)
         } else {
           date = moment(Date.now())
-            .add(2, 'M')
-            .format('YYYY-MM-02, 00:00:00');
+        //    .add(2, 'hours')
+        .add(2,'M')
+            .format('YYYY-MM-01');
+            console.log('Date ---->', date)
         }
+        // console.log('============================', date)
+        // console.log('Set Month above', req.params.id)
 
         const setMonth = await this.proposalModel.findByIdAndUpdate(
           req.params.id,
           { $set: { votingDate: date } },
         );
+
+     //   console.log('Set month Below')
+        const tempX = await this.proposalModel.findById(req.params.id)
+     //   console.log(tempX)
       }
       return 'Success';
     } catch (err) {
