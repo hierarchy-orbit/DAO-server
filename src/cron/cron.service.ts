@@ -14,7 +14,7 @@ export class CronService {
   constructor(@InjectModel('Proposal') private readonly proposalModel: Model<Proposal>,) {
   }
 
-  // @Cron('1 0 0 5 * *')
+   @Cron('1 0 0 5 * *')
   // @Cron('1 30 * * * *')
   votingTimeEnd() {
     console.log('cron job is running,calculating voting results');
