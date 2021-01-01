@@ -24,7 +24,7 @@ export class NodemailerService {
   sendEmail = async (req) => {
     // console.log('Working here')
     // //console.log('Request', req)
-    console.log('Email -->',req.body)
+    console.log('Name -->',req.body.name)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
     try{
   
@@ -53,7 +53,8 @@ export class NodemailerService {
         <h1 style="font-style: 100%" > PHOENIX-DAO </h1>
         <hr />
         <br />
-        <h3>Proposal Name: <span> ${req.body.proposalName} </span> </h3>
+        
+        <h3>Proposal Name: <span> ${req.body.name} </span> </h3>
           <h3 >Reason for rejecting: ${req.body.reasonForRejecting}</h3>
           <br/>
           <hr />
