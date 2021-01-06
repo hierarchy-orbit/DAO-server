@@ -29,6 +29,7 @@ export const ProposalSchema = new Schema(
         'Voting',
         'Draw',
         'Fail',
+        'Completed'
       ],
     },
     githubLink: { type: String, default: '' },

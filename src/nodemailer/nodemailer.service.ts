@@ -35,13 +35,15 @@ export class NodemailerService {
         secure: false,
         requireTLS: true,
         auth: {
-          user: "samadhello9812@gmail.com",
-          pass: "deutschland9812",
+          // user: "samadhello9812@gmail.com",
+          // pass: "deutschland9812",
+          user: process.env.EmailUserName,
+          pass: process.env.EmailPassword,
         },
       });
       
       var mailOptions = {
-        from: "samadhello9812@gmail.com",
+        from: process.env.EmailUserName,
         to: req.body.email,
         //to: 'samad@yopmail.com',
         subject: "PHNX-Dao reason for rejection.",

@@ -27,6 +27,7 @@ export class AdminService {
         throw { statusCode: 404, message: 'No attributes found!' };
       }
     } catch (err) {
+      console.log('Here')
       throw err;
     }
   }

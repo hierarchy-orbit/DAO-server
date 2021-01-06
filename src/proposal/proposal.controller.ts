@@ -67,6 +67,7 @@ export class ProposalController {
   @Get('/:id')
   async getProposalsById(@Req() req: Request, @Res() res: Response) {
     try {
+      console.log(req.params.id)
       const result = await this.ProposalService.getProposalsById(req.params.id);
       if (result) {
         res.status(200).send({

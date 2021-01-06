@@ -13,9 +13,16 @@ import { async } from 'rxjs/internal/scheduler/async';
 import { DAOAttributes } from '../admin/admin.model';
 import { EDESTADDRREQ } from 'constants';
 import { NodemailerService } from '../nodemailer/nodemailer.service'
+//import Web3 from 'web3'
+import { PHNX_PROPOSAL_ABI, PHNX_PROPOSAL_ADDRESS } from "../contracts/contracts"
+import axios from 'axios'
 
-const axios = require('axios');
+// const fs = require('fs')
+// const axios = require('axios');
+const Web3 = require('web3')
 const moment = require('moment');
+// let parsed = JSON.parse(fs.readFileSync(PHNX_PROPOSAL_ABI))
+// let abi = parsed.abi
 
 @Injectable()
 export class ProposalService {
@@ -92,6 +99,7 @@ export class ProposalService {
   getProposalsById = async id => {
     try {
       const result = await this.proposalModel.findById(id);
+      console.log('Get proposal by ID',result)
 
       return result;
     } catch (err) {
@@ -99,20 +107,26 @@ export class ProposalService {
     }
   };
   updateProposalStatus = async (id, req) => {
-    console.log('In update proposal status', req)
+    console.log('In update proposal status', req.body)
+   
    // console.log('REQ ----->',id,req)
    // console.log('REQ ---->',req.body)
   //  console.log(1)
   //  const {status, reasonForRejecting} = req.body;
-  //  console.log(2)
-    if(req.body.status == 'Rejected'){
-      const emailResult = await this.NodemailerService.sendEmail(req);
-      console.log(3)
-    }
+  //  console.log(2)  
     try {
+      if(req.body.status == 'Rejected'){
+        const emailResult = await this.NodemailerService.sendEmail(req);
+        console.log(3)
+      }
       let Attributes = [];
       const proposal = await this.proposalModel.findById(id);
-    //  console.log(4)
+      console.log('proposal', proposal)
+     // throw 'abc'
+    //  if(proposal.status == 'UpVote' || proposal.status =='Rejected' && req.body.stage == 1 ) {
+    //   console.log('In if stage wrong', req.body.stage)
+    //   throw { statusCode: 500, message: 'Proposal already changed'}
+    // }
       if (!proposal) {
         console.log(5)
         throw { statusCode: 404, message: 'Proposal Not Found' };
@@ -173,7 +187,7 @@ export class ProposalService {
       return result;
     } catch (err) {
       console.log('----//////',err)
-      throw 'Error';
+      throw err;
     }
   };
   getProposalByNumioAddress = async numioAddress => {
@@ -203,6 +217,68 @@ export class ProposalService {
       throw { status: 400, message: err.message };
     }
   };
+
+  getCurrentGasPrices = async () => {
+    try {
+        let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
+        let prices = {
+            low: response.data.safeLow / 10,
+            medium: response.data.average / 10,
+            high: response.data.fast / 10
+        };
+        console.log(prices)
+        return prices;
+    } catch (e) {
+        console.log(e)
+    }
+};
+
+updateStatus = async (id, status) => {
+  console.log('++++++++++++++++++++',PHNX_PROPOSAL_ABI)  
+  console.log('Update status from blockchain')
+  const web3 = new Web3('https://rinkeby.infura.io/v3/98ae0677533f424ca639d5abb8ead4e7');
+ 
+ const contract = new web3.eth.Contract(PHNX_PROPOSAL_ABI,PHNX_PROPOSAL_ADDRESS);
+  try {
+    let count = await web3.eth.getTransactionCount(
+      "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
+      "pending"
+    );
+    let gasPrices = await this.getCurrentGasPrices();
+    console.log(gasPrices);
+    let rawTransaction = {
+      from: "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
+      to: PHNX_PROPOSAL_ADDRESS,
+     data: contract.methods.updateProposalStatus(id, status).encodeABI(),
+      gasPrice: 300 * 1000000000,
+      nonce: count,
+      gasLimit: web3.utils.toHex(2000000),
+    };
+    let pr_key =
+      process.env.adminPrivateKey;
+    let signed = await web3.eth.accounts.signTransaction(
+      rawTransaction,
+      pr_key
+    );
+    await web3.eth
+      .sendSignedTransaction(signed.rawTransaction)
+      .on("confirmation", (confirmationNumber, receipt) => {
+        if (confirmationNumber === 1) {
+          return true
+        }
+      })
+      .on("error", (error) => {
+        return false
+      })
+      .on("transactionHash", async (hash) => {
+        console.log("transaction has -->", hash);
+      });
+  } catch (Err) {
+    console.log(Err);
+    return false
+  }
+};
+
 
   VoteOnProposal = async (req, res) => {
   //  console.log('Status',req)
@@ -273,8 +349,11 @@ export class ProposalService {
         throw { statusCode: 404, message: 'No attributes found!' };
       }
       if (checkCount.votes.length > result.minimumUpvotes - 1) {
-        console.log('In if checkCount', req.body)
+      //  console.log('In if checkCount', req.body)
         let tempStatus = { body:{status: 'Voting'} }
+        console.log('ID ----->', req.params.id)
+      const blockChainResult =  await this.updateStatus(req.params.id, 2)
+      console.log('Blockchain result --->',blockChainResult)
        await this.updateProposalStatus(req.params.id, tempStatus);
       // await this.updateProposalStatus(req.params.id, tempStatus)
         let date = new Date();
@@ -339,10 +418,9 @@ export class ProposalService {
     }
   };
   changeStatusOfMilestoneByAdmin = async (req, res) => {
+    console.log('Proposal',req.body)
     try {
-      console.log(1)
       if (!req.params.id) {
-      console.log(2)
         throw {
           statusCode: 400,
           message: 'Please provide proposal id in params',
@@ -351,42 +429,35 @@ export class ProposalService {
 
       const result = await this.proposalModel.findById(req.params.id);
       if (req.body.index > result.milestone.length) {
-        console.log(3)
         throw {
           statusCode: 400,
           message: 'Index must not be greater then the total milestones',
         };
       }
       if (result.status != 'Accepted') {
-        console.log(4)
         throw { statusCode: 400, message: 'Invalid Status' };
       }
       if (!result) {
-        console.log(5)
         throw { statusCode: 404, message: 'Proposal not found!' };
       }
       if (!req.body.numioAddress) {
-        console.log(6)
         throw { statusCode: 400, message: 'Must Provide Numio Address' };
       }
       const user = await this.userModel.findOne({
         numioAddress: req.body.numioAddress,
       });
       if (!user) {
-        console.log(7)
         throw { statusCode: 400, message: 'User not found' };
       }
       if (user.isAdmin == false) {
-        console.log(8)
         throw { statusCode: 400, message: 'User must be the admin' };
       }
       if (user.isAdmin) {
-        console.log(9)
         result.milestone[req.body.index].status = req.body.status;
         result.markModified('milestone');
         result.save();
         const emailResult = await this.NodemailerService.sendEmail(req);
-      console.log('Email sent',emailResult)
+     console.log('Email sent',emailResult)
       }
       return result;
     } catch (err) {
