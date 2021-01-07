@@ -351,7 +351,7 @@ updateStatus = async (id, status) => {
       if (checkCount.votes.length > result.minimumUpvotes - 1) {
       //  console.log('In if checkCount', req.body)
         let tempStatus = { body:{status: 'Voting'} }
-        console.log('ID ----->', req.params.id)
+        console.log('ID here ----->', req.params.id)
       const blockChainResult =  await this.updateStatus(req.params.id, 2)
       console.log('Blockchain result --->',blockChainResult)
        await this.updateProposalStatus(req.params.id, tempStatus);
