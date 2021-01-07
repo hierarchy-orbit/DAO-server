@@ -356,7 +356,7 @@ updateStatus = async (id, status) => {
       console.log('Blockchain result --->',blockChainResult)
        await this.updateProposalStatus(req.params.id, tempStatus);
       // await this.updateProposalStatus(req.params.id, tempStatus)
-        let date = new Date(); 
+        let date = new Date();  
         if (date.getDate() < 16) {
           date = moment(Date.now()) 
           //  .add(1, 'hours')
