@@ -22,7 +22,9 @@ export class NodemailerService {
   constructor() {}
 
   sendEmail = async (req) => {
-    console.log('Email -->',req.body)
+    // console.log('Working here')
+    // //console.log('Request', req)
+    console.log('Name -->',req.body.name)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
     try{
   
@@ -33,13 +35,15 @@ export class NodemailerService {
         secure: false,
         requireTLS: true,
         auth: {
-          user: "samadhello9812@gmail.com",
-          pass: "deutschland9812",
+          // user: "samadhello9812@gmail.com",
+          // pass: "deutschland9812",
+          user: process.env.EmailUserName,
+          pass: process.env.EmailPassword,
         },
       });
       
       var mailOptions = {
-        from: "samadhello9812@gmail.com",
+        from: process.env.EmailUserName,
         to: req.body.email,
         //to: 'samad@yopmail.com',
         subject: "PHNX-Dao reason for rejection.",
@@ -51,11 +55,11 @@ export class NodemailerService {
         <h1 style="font-style: 100%" > PHOENIX-DAO </h1>
         <hr />
         <br />
-        <h3>Proposal Name: <span> ${req.body.proposalName} </span> </h3>
+        
+        <h3>Proposal Name: <span> ${req.body.name} </span> </h3>
           <h3 >Reason for rejecting: ${req.body.reasonForRejecting}</h3>
           <br/>
           <hr />
-          <h3 >Proposal time of creation: ${req.body.createdAt} </h3>
         </div>
         `
         
@@ -65,7 +69,7 @@ export class NodemailerService {
         if (error) {
           console.log('123',error);
         } else {
-          console.log("Email sent: " + info.response);
+          console.log("Email sent: " , info.response);
         }
       });
 

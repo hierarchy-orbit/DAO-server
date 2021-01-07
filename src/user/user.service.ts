@@ -10,6 +10,7 @@ export class UserService {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async addUser(user) {
     try {
+      console.log('USer')
       const uniqueUser = await this.findUser(user.numioAddress);
       if (!uniqueUser) {
         user.isAdmin = false;

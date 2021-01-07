@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+ /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Controller, Post, Res, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';

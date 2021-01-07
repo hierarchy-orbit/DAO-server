@@ -8,23 +8,88 @@ import { Proposal } from '../proposal/proposal.model';
 import { Cron } from '@nestjs/schedule';
 const axios = require('axios');
 const moment = require('moment');
+import Web3 from 'web3'
+import {PHNX_PROPOSAL_ABI} from '../contracts/contracts'
 
 @Injectable()
 export class CronService {
   constructor(@InjectModel('Proposal') private readonly proposalModel: Model<Proposal>,) {
   }
 
-  // @Cron('1 0 0 5 * *')
-  // votingTimeEnd() {
-  //   console.log('cron job is running,calculating voting results');
-  //   this.votingResultCalculation({ body: { votingStatus: true } });
-  // }
+   @Cron('1 0 0 5 * *')
+  // @Cron('1 30 * * * *')
+  votingTimeEnd() {
+    console.log('cron job is running,calculating voting results');
+    this.votingResultCalculation({ body: { votingStatus: true } });
+  }
 
   // @Cron('1 0 5 2 * *')
-  // votingDateArrival() {
-  //   console.log('cron job is running, voting starts now');
-  //   this.votingTimeStart({ body: { status: "Voting" } });
-  // }
+   @Cron('1 0 * * * *')
+  votingDateArrival() {
+    console.log('cron job is running, voting starts now');
+    this.votingTimeStart({ body: { status: "Voting" } });
+  }
+  
+  getCurrentGasPrices = async () => {
+    try {
+        let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
+        let prices = {
+            low: response.data.safeLow / 10,
+            medium: response.data.average / 10,
+            high: response.data.fast / 10
+        };
+        console.log(prices)
+        return prices;
+    } catch (e) {
+        console.log(e)
+    }
+};
+  
+updateStatus = async (id, status) => {
+  // console.log('++++++++++++++++++++',PHNX_PROPOSAL_ABI)  
+  console.log('Update status from blockchain')
+  const web3 = new Web3('https://rinkeby.infura.io/v3/98ae0677533f424ca639d5abb8ead4e7');
+ 
+ const contract = new web3.eth.Contract(PHNX_PROPOSAL_ABI,'0x2c1A4C3c1bcb1eE2CCFF5eB53348CA0D028AEb6d');
+  try {
+    let count = await web3.eth.getTransactionCount(
+      "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
+      "pending"
+    );
+    let gasPrices = await this.getCurrentGasPrices();
+    console.log(gasPrices);
+    let rawTransaction = {
+      from: "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
+      to: "0x2c1A4C3c1bcb1eE2CCFF5eB53348CA0D028AEb6d",
+     data: contract.methods.updateProposalStatus(id, status).encodeABI(),
+      gasPrice: 300 * 1000000000,
+      nonce: count,
+      gasLimit: web3.utils.toHex(2000000),
+    };
+    let pr_key =
+      process.env.adminPrivateKey;
+    let signed = await web3.eth.accounts.signTransaction(
+      rawTransaction,
+      pr_key
+    );
+    await web3.eth
+      .sendSignedTransaction(signed.rawTransaction)
+      .on("confirmation", (confirmationNumber, receipt) => {
+        if (confirmationNumber === 1) {
+          return true
+        }
+      })
+      .on("error", (error) => {
+        return false
+      })
+      .on("transactionHash", async (hash) => {
+        console.log("transaction has -->", hash);
+      });
+  } catch (Err) {
+    console.log(Err);
+    return false
+  }
+};
 
   votingResultCalculation = async req => {
     //   let setSchedule = '0 0 0 4 * *';
@@ -55,11 +120,11 @@ export class CronService {
         .add(3, 'days')
         .format();
 
-      console.log('votingDate is', new Date(votingProposals[0].votingDate));
-      console.log('resultDate is', resultDate);
-      console.log('utcDate is', utcDate);
+      // console.log('votingDate is', new Date(votingProposals[0].votingDate));
+      // console.log('resultDate is', resultDate);
+      // console.log('utcDate is', utcDate);
 
-      console.log('comparison', resultDate < utcDate);
+      // console.log('comparison', resultDate < utcDate);
 
       let totalVotes = 0;
       console.log('proposals with voting status are --->');
@@ -74,7 +139,7 @@ export class CronService {
           totalVotes += votingProposals[i].stake.length;
         }
       }
-      console.log('total votes are', totalVotes);
+     // console.log('total votes are', totalVotes);
 
       // updating proposal status according to percentage of votes on it
       for (let i = 0; i < votingProposals.length; i++) {
@@ -106,6 +171,10 @@ export class CronService {
               },
               { runValidators: true, new: true },
             );
+
+            await this.updateStatus(votingProposals[i]._id, 3)
+
+            console.log('Voting proposal ID ----->',votingProposals[i]._id)
             
             votingProposals.splice(i, 1);
             i--;
@@ -125,6 +194,9 @@ export class CronService {
               },
               { runValidators: true, new: true },
             );
+
+          //  await this.updateStatus(votingProposals[i]._id, 5)
+
             votingProposals.splice(i, 1);
             i--;
           }
@@ -188,7 +260,7 @@ export class CronService {
       const votingProposals = await this.proposalModel.find({
         status: req.body.status,
       });
-      console.log("voting proposals are ", votingProposals)
+     // console.log("voting proposals are ", votingProposals)
       if (votingProposals.length === 0) {
         throw {
           statusCode: 404,
@@ -197,11 +269,14 @@ export class CronService {
       }
 
       let serverDate= moment(Date.now()).format();
-      console.log("server Date is ", serverDate)
+      console.log("server Date is "
+      , serverDate)
 
       for(let i=0; i < votingProposals.length ; i++){
+        console.log('Moment date',moment(votingProposals[i].votingDate).format())
+        console.log('Server date',serverDate)
         console.log(votingProposals[i].name, " and date ",moment(votingProposals[i].votingDate).format() , " and server date" , serverDate )
-        if(moment(votingProposals[i].votingDate).format() < serverDate){
+        if(moment(votingProposals[i].votingDate).format() <= serverDate){
           await this.proposalModel.findByIdAndUpdate(
             votingProposals[i]._id,
             {

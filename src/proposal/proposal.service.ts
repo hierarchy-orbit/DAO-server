@@ -13,9 +13,16 @@ import { async } from 'rxjs/internal/scheduler/async';
 import { DAOAttributes } from '../admin/admin.model';
 import { EDESTADDRREQ } from 'constants';
 import { NodemailerService } from '../nodemailer/nodemailer.service'
+//import Web3 from 'web3'
+import { PHNX_PROPOSAL_ABI, PHNX_PROPOSAL_ADDRESS } from "../contracts/contracts"
+import axios from 'axios'
 
-const axios = require('axios');
+// const fs = require('fs')
+// const axios = require('axios');
+const Web3 = require('web3')
 const moment = require('moment');
+// let parsed = JSON.parse(fs.readFileSync(PHNX_PROPOSAL_ABI))
+// let abi = parsed.abi
 
 @Injectable()
 export class ProposalService {
@@ -30,7 +37,9 @@ export class ProposalService {
   ) {}
 
   getAllProposals = async () => {
+    console.log('Working here')
     try {
+      console.log('Working here')
       let proposals = await this.proposalModel.find();
       let serverDate= moment(Date.now()).format();
       for(let i=0 ; i < proposals.length; i++){
@@ -58,6 +67,7 @@ export class ProposalService {
   };
 
   postProposal = async (req, res) => {
+    console.log('In post proposal')
     try {
       const user = await this.userService.getUserById(req.numioAddress);
       if (!user) {
@@ -89,6 +99,7 @@ export class ProposalService {
   getProposalsById = async id => {
     try {
       const result = await this.proposalModel.findById(id);
+      console.log('Get proposal by ID',result)
 
       return result;
     } catch (err) {
@@ -96,36 +107,55 @@ export class ProposalService {
     }
   };
   updateProposalStatus = async (id, req) => {
-    const {status, reasonForRejecting} = req.body;
-    if(status == 'Rejected'){
-      const emailResult = await this.NodemailerService.sendEmail(req);
-      return emailResult
-    }
+    console.log('In update proposal status', req.body)
+   
+   // console.log('REQ ----->',id,req)
+   // console.log('REQ ---->',req.body)
+  //  console.log(1)
+  //  const {status, reasonForRejecting} = req.body;
+  //  console.log(2)  
     try {
+      if(req.body.status == 'Rejected'){
+        const emailResult = await this.NodemailerService.sendEmail(req);
+        console.log(3)
+      }
       let Attributes = [];
       const proposal = await this.proposalModel.findById(id);
-
+      console.log('proposal', proposal)
+     // throw 'abc'
+    //  if(proposal.status == 'UpVote' || proposal.status =='Rejected' && req.body.stage == 1 ) {
+    //   console.log('In if stage wrong', req.body.stage)
+    //   throw { statusCode: 500, message: 'Proposal already changed'}
+    // }
       if (!proposal) {
+        console.log(5)
         throw { statusCode: 404, message: 'Proposal Not Found' };
+        
       }
-      if (status === 'UpVote') {
+      console.log('AAAAA')
+      if (req.body.status === 'UpVote') {
+        console.log(989)
         Attributes = await this.DAOAttributesModel.find().exec();
         if (Attributes.length == 0) {
+          console.log(7)
           throw { statusCode: 404, message: 'No attributes found!' };
         }
+     //   console.log('BBBBB')
         const expirationDate = moment()
           .add(Attributes[0].maxUpvoteDays, 'd')
           .format('YYYY-MM-DD');
-
+     //   console.group('CCCCCC')
         const result = await this.proposalModel.findByIdAndUpdate(
           id,
           {
-            $set: { status: status, expirationDate: expirationDate },
+            $set: { status: req.body.status, expirationDate: expirationDate },
           },
           { runValidators: true, new: true },
         );
+        console.log(8)
         return result;
-      } else if (status === 'Accepted') {
+      } else if (req.body.status === 'Accepted') {
+        console.log(9)
         let completionDays = 0,
           estCompletionDate;
         for (let t = 0; t < proposal.milestone.length; t++) {
@@ -134,6 +164,7 @@ export class ProposalService {
         estCompletionDate = moment(Date.now())
           .add(completionDays, 'days')
           .format();
+          console.log(10)
         const result = await this.proposalModel.findByIdAndUpdate(
           id,
           {
@@ -143,17 +174,20 @@ export class ProposalService {
         );
         return result;
       }
+      console.log('DDDD')
 
       const result = await this.proposalModel.findByIdAndUpdate(
         id,
         {
-          $set: { status: status },
+          $set: { status: req.body.status },
         },
         { runValidators: true, new: true },
       );
+      console.log(11)
       return result;
     } catch (err) {
-      throw 'Error';
+      console.log('----//////',err)
+      throw err;
     }
   };
   getProposalByNumioAddress = async numioAddress => {
@@ -184,16 +218,82 @@ export class ProposalService {
     }
   };
 
+  getCurrentGasPrices = async () => {
+    try {
+        let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
+        let prices = {
+            low: response.data.safeLow / 10,
+            medium: response.data.average / 10,
+            high: response.data.fast / 10
+        };
+        console.log(prices)
+        return prices;
+    } catch (e) {
+        console.log(e)
+    }
+};
+
+updateStatus = async (id, status) => {
+  console.log('++++++++++++++++++++',PHNX_PROPOSAL_ABI)  
+  console.log('Update status from blockchain')
+  const web3 = new Web3('https://rinkeby.infura.io/v3/98ae0677533f424ca639d5abb8ead4e7');
+ 
+ const contract = new web3.eth.Contract(PHNX_PROPOSAL_ABI,PHNX_PROPOSAL_ADDRESS);
+  try {
+    let count = await web3.eth.getTransactionCount(
+      "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
+      "pending"
+    );
+    let gasPrices = await this.getCurrentGasPrices();
+    console.log(gasPrices);
+    let rawTransaction = {
+      from: "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
+      to: PHNX_PROPOSAL_ADDRESS,
+     data: contract.methods.updateProposalStatus(id, status).encodeABI(),
+      gasPrice: 300 * 1000000000,
+      nonce: count,
+      gasLimit: web3.utils.toHex(2000000),
+    };
+    let pr_key =
+      process.env.adminPrivateKey;
+    let signed = await web3.eth.accounts.signTransaction(
+      rawTransaction,
+      pr_key
+    );
+    await web3.eth
+      .sendSignedTransaction(signed.rawTransaction)
+      .on("confirmation", (confirmationNumber, receipt) => {
+        if (confirmationNumber === 1) {
+          return true
+        }
+      })
+      .on("error", (error) => {
+        return false
+      })
+      .on("transactionHash", async (hash) => {
+        console.log("transaction has -->", hash);
+      });
+  } catch (Err) {
+    console.log(Err);
+    return false
+  }
+};
+
+
   VoteOnProposal = async (req, res) => {
+  //  console.log('Status',req)
     try {
       const proposal = await this.proposalModel.findById(req.params.id);
+   //   console.log('Proposal', proposal.status)
 
       if (!proposal) {
-        throw { statusCode: 404, message: 'Proposal Not Found' };
+     //   console.log('In if 1')
+       throw { statusCode: 404, message: 'Proposal Not Found' };
       }
 
       if (proposal.status !== 'UpVote') {
-        throw { statusCode: 400, message: 'Proposal cannot be upvoted' };
+    //    console.log('In if 2')
+       throw { statusCode: 400, message: 'Proposal cannot be upvoted' };
       }
       let serverDate= moment(Date.now()).format();
       if(moment(proposal.expirationDate).format() < serverDate ){
@@ -205,19 +305,24 @@ export class ProposalService {
           },
           { runValidators: true, new: true },
         );
+        
+    //    console.log('In if 3')
         throw { statusCode: 400, message: 'Proposal cannot be upvoted since it is expired' };
       }
+    //  console.log('Hello')    
 
       const checkUserExist = await this.userModel.find({
         email: req.body.email,
       });
       if (checkUserExist.length == 0) {
-        throw { statusCode: 400, message: 'User does not exist' };
+    //    console.log('In if 4')
+       throw { statusCode: 400, message: 'User does not exist' };
       }
       const check = proposal.votes.some(el => {
         //Here is the name validation (A user cannot vote twice)
         if (el.email == req.body.email) {
-          throw { statusCode: 400, message: 'User cannot vote again' };
+        //  console.log('In if 5')
+         throw { statusCode: 400, message: 'User cannot vote again' };
         }
       });
 
@@ -239,30 +344,48 @@ export class ProposalService {
       const checkCount = await this.proposalModel.findById(req.params.id);
       const Attributes = await this.DAOAttributesModel.find().exec();
       if (Attributes.length == 0) {
+   //     console.log('In if 6')
+    //    console.log('Here')
         throw { statusCode: 404, message: 'No attributes found!' };
       }
       if (checkCount.votes.length > result.minimumUpvotes - 1) {
-        await this.updateProposalStatus(req.params.id, 'Voting');
-        let date = new Date();
-
+      //  console.log('In if checkCount', req.body)
+        let tempStatus = { body:{status: 'Voting'} }
+        console.log('ID here ----->', req.params.id)
+      const blockChainResult =  await this.updateStatus(req.params.id, 2)
+      console.log('Blockchain result --->',blockChainResult)
+       await this.updateProposalStatus(req.params.id, tempStatus);
+      // await this.updateProposalStatus(req.params.id, tempStatus)
+        let date = new Date();  
         if (date.getDate() < 16) {
-          date = moment(Date.now())
-            .add(1, 'M')
-            .format('YYYY-MM-02, 00:00:00');
+          date = moment(Date.now()) 
+          //  .add(1, 'hours')
+          .add(1,'M')
+            .format('YYYY-MM-01');
+            console.log('Date ---->', date)
         } else {
           date = moment(Date.now())
-            .add(2, 'M')
-            .format('YYYY-MM-02, 00:00:00');
+        //    .add(2, 'hours')
+        .add(2,'M')
+            .format('YYYY-MM-01');
+            console.log('Date ---->', date)
         }
+        // console.log('============================', date)
+        // console.log('Set Month above', req.params.id)
 
         const setMonth = await this.proposalModel.findByIdAndUpdate(
           req.params.id,
           { $set: { votingDate: date } },
         );
+
+     //   console.log('Set month Below')
+        const tempX = await this.proposalModel.findById(req.params.id)
+     //   console.log(tempX)
       }
       return 'Success';
     } catch (err) {
-      throw { statusCode: 400, message: err.message };
+      console.log("check error now",err)
+      throw { statusCode: 400, message: err.message};
     }
   };
 
@@ -295,6 +418,7 @@ export class ProposalService {
     }
   };
   changeStatusOfMilestoneByAdmin = async (req, res) => {
+    console.log('Proposal',req.body)
     try {
       if (!req.params.id) {
         throw {
@@ -333,10 +457,11 @@ export class ProposalService {
         result.markModified('milestone');
         result.save();
         const emailResult = await this.NodemailerService.sendEmail(req);
-      console.log('Email sent',emailResult)
+     console.log('Email sent',emailResult)
       }
       return result;
     } catch (err) {
+      console.log('Error --->', err.message)
       throw { statusCode: 400, message: err.message };
     }
   };

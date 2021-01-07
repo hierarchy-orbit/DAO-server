@@ -49,6 +49,7 @@ export class ProposalController {
   @Post('/vote/:id')
   async voteOnProposal(@Req() req: Request, @Res() res: Response) {
     try {
+      console.log('COntroller ', req.body)
       const result = await this.ProposalService.VoteOnProposal(req, res);
       res.status(200).send({
         statusCode: 200,
@@ -66,6 +67,7 @@ export class ProposalController {
   @Get('/:id')
   async getProposalsById(@Req() req: Request, @Res() res: Response) {
     try {
+      console.log(req.params.id)
       const result = await this.ProposalService.getProposalsById(req.params.id);
       if (result) {
         res.status(200).send({
@@ -89,7 +91,7 @@ export class ProposalController {
   @Put('/:id')
   async updateProposalStatus(@Req() req: Request, @Res() res: Response) {
     try {
-      const result = await this.ProposalService.updateProposalStatus(
+      const result: any = await this.ProposalService.updateProposalStatus(
         req.params.id,
         req
       );
@@ -111,7 +113,7 @@ export class ProposalController {
       });
     }
   }
-  s;
+  ;
   // Here we get a proposal by NUMIOADDRESS
   @Post('/getByNumioAddress')
   async getByNumioAddress(@Req() req: Request, @Res() res: Response) {

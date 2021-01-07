@@ -19,6 +19,7 @@ export class AdminService {
 
   async getAttributes(): Promise<DAOAttributes[]> {
     try {
+      console.log('In attributes')
       const Attributes = await this.DAOAttributesModel.find().exec();
       if (Attributes.length !== 0) {
         return Attributes[0];
@@ -26,6 +27,7 @@ export class AdminService {
         throw { statusCode: 404, message: 'No attributes found!' };
       }
     } catch (err) {
+      console.log('Here')
       throw err;
     }
   }
