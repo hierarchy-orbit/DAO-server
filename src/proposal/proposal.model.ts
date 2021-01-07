@@ -39,8 +39,8 @@ export const ProposalSchema = new Schema(
     email: { type: String, required: true },
     purpose: { type: String, required: true },
     importance: { type: String, required: false },
-    fundsUsage: { type: String, required: false },
-    personalExperience: { type: String, required: false },
+    // fundsUsage: { type: String, required: false },
+    // personalExperience: { type: String, required: false },
     experiencedYear: { type: Number, required: false },
     duration: { type: Number, required: true },
     userProfession: { type: String, required: true }
