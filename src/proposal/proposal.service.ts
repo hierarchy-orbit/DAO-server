@@ -14,7 +14,7 @@ import { DAOAttributes } from '../admin/admin.model';
 import { EDESTADDRREQ } from 'constants';
 import { NodemailerService } from '../nodemailer/nodemailer.service'
 //import Web3 from 'web3'
-import { PHNX_PROPOSAL_ABI, PHNX_PROPOSAL_ADDRESS } from "../contracts/contracts"
+import { PHNX_PROPOSAL_ABI, PHNX_PROPOSAL_ADDRESS } from '../contracts/contracts'
 import axios from 'axios'
 
 // const fs = require('fs')
@@ -315,7 +315,7 @@ updateStatus = async (id, status) => {
           { runValidators: true, new: true },
         );
         
-      console.log('In if 3')
+      console.log('In if three 3')
         throw { statusCode: 400, message: 'Proposal cannot be upvoted since it is expired' };
       }
     //  console.log('Hello')    

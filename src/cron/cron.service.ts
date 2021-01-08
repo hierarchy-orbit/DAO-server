@@ -8,7 +8,7 @@ import { Proposal } from '../proposal/proposal.model';
 import { Cron } from '@nestjs/schedule';
 const axios = require('axios');
 const moment = require('moment');
-import Web3 from 'web3'
+const Web3 =require('web3')
 import {PHNX_PROPOSAL_ABI} from '../contracts/contracts'
 
 @Injectable()
@@ -46,12 +46,12 @@ export class CronService {
 };
   
 updateStatus = async (id, status) => {
-  console.log('Here')
-  // console.log('++++++++++++++++++++',PHNX_PROPOSAL_ABI)  
-  console.log('Update status from blockchain')
   const web3 = new Web3('https://rinkeby.infura.io/v3/98ae0677533f424ca639d5abb8ead4e7');
  
  const contract = new web3.eth.Contract(PHNX_PROPOSAL_ABI,'0x2c1A4C3c1bcb1eE2CCFF5eB53348CA0D028AEb6d');
+  console.log('Here')
+  // console.log('++++++++++++++++++++',PHNX_PROPOSAL_ABI)  
+  console.log('Update status from blockchain')
   try {
     let count = await web3.eth.getTransactionCount(
       "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
