@@ -324,6 +324,7 @@ updateStatus = async (id, status) => {
         email: req.body.email,
       });
       if (checkUserExist.length == 0) {
+        console.log('In  if')
     //    console.log('In if 4')
        throw { statusCode: 400, message: 'User does not exist' };
       }
