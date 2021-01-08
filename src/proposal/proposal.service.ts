@@ -392,6 +392,7 @@ updateStatus = async (id, status) => {
         const tempX = await this.proposalModel.findById(req.params.id)
      //   console.log(tempX)
       }
+      console.log('Success')
       return 'Success';
     } catch (err) {
       console.log("check error now",err)
