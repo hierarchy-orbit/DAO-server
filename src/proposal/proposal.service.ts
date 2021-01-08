@@ -253,7 +253,7 @@ updateStatus = async (id, status) => {
       from: "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
       to: '0x5579fBfD5417758Bf276276aFb597b7C6b30786E',
      data: contract.methods.updateProposalStatus(id, 2).encodeABI(),
-      gasPrice: 400 * 1000000000,
+      gasPrice: gasPrices.high * 1000000000,
       nonce: count,
       gasLimit: web3.utils.toHex(2000000),
     };
@@ -270,7 +270,7 @@ updateStatus = async (id, status) => {
         if (confirmationNumber === 1) {
           console.log('receir', receipt)
           
-        await this.updateProposalStatus(id, tempStatus);
+        // await this.updateProposalStatus(id, tempStatus);
           return true
         }
       })
@@ -362,10 +362,13 @@ updateStatus = async (id, status) => {
         let tempStatus = { body:{status: 'Voting'} }
         console.log('ID here ----->', req.params.id)
       const blockChainResult =  await this.updateStatus(req.params.id, 2)
+      console.log('Blockchain result ======>',blockChainResult)
+      if(blockChainResult){
+        console.log('Blockchain result ======>',blockChainResult)}
       // if(blockChainResult) {
       //   await this.updateProposalStatus(req.params.id, tempStatus);
       // }
-      // await this.updateProposalStatus(req.params.id, tempStatus)
+       await this.updateProposalStatus(req.params.id, tempStatus)
         let date = new Date();  
         if (date.getDate() < 16) {
           date = moment(Date.now()) 
