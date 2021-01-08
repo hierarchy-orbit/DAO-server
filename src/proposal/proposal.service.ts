@@ -234,11 +234,14 @@ export class ProposalService {
 };
 
 updateStatus = async (id, status) => {
-  console.log('++++++++++++++++++++',PHNX_PROPOSAL_ABI)  
+ 
+  console.log('Address ====>',PHNX_PROPOSAL_ADDRESS)
+  console.log('ID', id)
+  //console.log('++++++++++++++++++++',PHNX_PROPOSAL_ABI)  
   console.log('Update status from blockchain')
   const web3 = new Web3('https://rinkeby.infura.io/v3/98ae0677533f424ca639d5abb8ead4e7');
  
- const contract = new web3.eth.Contract(PHNX_PROPOSAL_ABI,PHNX_PROPOSAL_ADDRESS);
+ const contract = new web3.eth.Contract(PHNX_PROPOSAL_ABI,'0x5579fBfD5417758Bf276276aFb597b7C6b30786E');
   try {
     let count = await web3.eth.getTransactionCount(
       "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
@@ -248,9 +251,9 @@ updateStatus = async (id, status) => {
     console.log(gasPrices);
     let rawTransaction = {
       from: "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
-      to: PHNX_PROPOSAL_ADDRESS,
-     data: contract.methods.updateProposalStatus(id, status).encodeABI(),
-      gasPrice: 300 * 1000000000,
+      to: '0x5579fBfD5417758Bf276276aFb597b7C6b30786E',
+     data: contract.methods.updateProposalStatus(id, 2).encodeABI(),
+      gasPrice: 400 * 1000000000,
       nonce: count,
       gasLimit: web3.utils.toHex(2000000),
     };
@@ -260,18 +263,24 @@ updateStatus = async (id, status) => {
       rawTransaction,
       pr_key
     );
+    let tempStatus = { body:{status: 'Voting'} }
     await web3.eth
       .sendSignedTransaction(signed.rawTransaction)
-      .on("confirmation", (confirmationNumber, receipt) => {
+      .on("confirmation", async (confirmationNumber, receipt) => {
         if (confirmationNumber === 1) {
+          console.log('receir', receipt)
+          
+        await this.updateProposalStatus(id, tempStatus);
           return true
         }
       })
       .on("error", (error) => {
+        console.log('error', error)
         return false
       })
       .on("transactionHash", async (hash) => {
         console.log("transaction has -->", hash);
+        return true
       });
   } catch (Err) {
     console.log(Err);
@@ -353,8 +362,9 @@ updateStatus = async (id, status) => {
         let tempStatus = { body:{status: 'Voting'} }
         console.log('ID here ----->', req.params.id)
       const blockChainResult =  await this.updateStatus(req.params.id, 2)
-      console.log('Blockchain result --->',blockChainResult)
-       await this.updateProposalStatus(req.params.id, tempStatus);
+      // if(blockChainResult) {
+      //   await this.updateProposalStatus(req.params.id, tempStatus);
+      // }
       // await this.updateProposalStatus(req.params.id, tempStatus)
         let date = new Date();  
         if (date.getDate() < 16) {
