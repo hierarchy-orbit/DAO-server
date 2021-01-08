@@ -315,7 +315,7 @@ updateStatus = async (id, status) => {
           { runValidators: true, new: true },
         );
         
-    //    console.log('In if 3')
+      console.log('In if 3')
         throw { statusCode: 400, message: 'Proposal cannot be upvoted since it is expired' };
       }
     //  console.log('Hello')    
