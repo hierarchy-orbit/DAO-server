@@ -68,6 +68,8 @@ export class ProposalService {
 
   postProposal = async (req, res) => {
     console.log('In post proposal')
+    let serverDate= moment(Date.now()).format();
+    console.log('Server Date =======>>',serverDate)
     try {
       const user = await this.userService.getUserById(req.numioAddress);
       if (!user) {
@@ -117,6 +119,7 @@ export class ProposalService {
     try {
       if(req.body.status == 'Rejected'){
         const emailResult = await this.NodemailerService.sendEmail(req);
+        console.log('Email', emailResult)
         console.log(3)
       }
       let Attributes = [];
@@ -373,15 +376,13 @@ updateStatus = async (id, status) => {
         let date = new Date();  
         if (date.getDate() < 16) {
           date = moment(Date.now()) 
-          //  .add(1, 'hours')
-          .add(1,'M')
-            .format('YYYY-MM-01');
+         .add(1,'M')
+           .format('YYYY-MM-01');
             console.log('Date ---->', date)
         } else {
-          date = moment(Date.now())
-        //    .add(2, 'hours')
-        .add(2,'M')
-            .format('YYYY-MM-01');
+          date = moment(Date.now())  
+         .add(2,'M')
+           .format('YYYY-MM-01');
             console.log('Date ---->', date)
         }
         // console.log('============================', date)

@@ -9,6 +9,7 @@ import { Cron } from '@nestjs/schedule';
 const axios = require('axios');
 const moment = require('moment');
 const Web3 =require('web3')
+
 import {PHNX_PROPOSAL_ABI} from '../contracts/contracts'
 
 @Injectable()
@@ -196,7 +197,7 @@ updateStatus = async (id, status) => {
               { runValidators: true, new: true },
             );
 
-          //  await this.updateStatus(votingProposals[i]._id, 5)
+            await this.updateStatus(votingProposals[i]._id, 5)
 
             votingProposals.splice(i, 1);
             i--;
@@ -296,4 +297,34 @@ updateStatus = async (id, status) => {
       throw err;
     }
   }
+
+  // expireProposals = async (req) => {
+  //   try{ 
+  //     let serverDate= moment(Date.now()).format();
+  //     const expiredProposals = await this.proposalModel.find();
+  //   //  if(expiredProposals.expirationDate >= serverDate ){}
+
+
+  //     for(let i=0; i < expiredProposals.length ; i++){
+  //       console.log('Moment date',moment(expiredProposals[i].votingDate).format())
+  //       console.log('Server date',serverDate)
+  //       console.log(expiredProposals[i].name, " and date ",moment(expiredProposals[i].votingDate).format() , " and server date" , serverDate )
+  //       if(moment(expiredProposals[i].votingDate).format() <= serverDate){
+  //         await this.proposalModel.findByIdAndUpdate(
+  //           expiredProposals[i]._id,
+  //           {
+  //             $set: { votingStatus: true },
+  //           },
+  //           { runValidators: true, new: true },
+  //         ).then((proposal:any)=>{
+  //           console.log("updated proposal " , proposal.name , " with voting date " , proposal.votingDate)
+  //         }).catch((err)=>{
+  //           console.log("error updating proposal " , err)
+  //         })
+  //       }
+  //     }
+  //   }catch(err){
+  //     throw err
+  //   }
+  // }
 }
