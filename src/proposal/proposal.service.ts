@@ -378,12 +378,12 @@ updateStatus = async (id, status) => {
         if (date.getDate() < 16) {
           date = moment(Date.now()) 
          .add(1,'M')
-           .format('YYYY-MM-01');
+           .format('YYYY-MM-02');
             console.log('Date ---->', date)
         } else {
           date = moment(Date.now())  
          .add(2,'M')
-           .format('YYYY-MM-01');
+           .format('YYYY-MM-02');
             console.log('Date ---->', date)
         }
         // console.log('============================', date)
