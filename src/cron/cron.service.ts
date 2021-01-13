@@ -64,7 +64,7 @@ updateStatus = async (id, status) => {
       from: "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
       to: "0x2c1A4C3c1bcb1eE2CCFF5eB53348CA0D028AEb6d",
      data: contract.methods.updateProposalStatus(id, status).encodeABI(),
-      gasPrice: 300 * 1000000000,
+      gasPrice: gasPrices.high * 1000000000,
       nonce: count,
       gasLimit: web3.utils.toHex(2000000),
     };
@@ -166,10 +166,12 @@ updateStatus = async (id, status) => {
             .add(completionDays, 'days')
             .format();
 
+            console.log('Proposal accepted')
+
             await this.proposalModel.findByIdAndUpdate(
               votingProposals[i]._id,
               {
-                $set: { status: 'Accepted' ,estCompletionDate},
+                $set: { status: 'Accepted' ,votingStatus:false,estCompletionDate},
               },
               { runValidators: true, new: true },
             );
@@ -192,7 +194,7 @@ updateStatus = async (id, status) => {
             await this.proposalModel.findByIdAndUpdate(
               votingProposals[i]._id,
               {
-                $set: { status: 'Fail' },
+                $set: { status: 'Fail' ,votingStatus:false},
               },
               { runValidators: true, new: true },
             );
@@ -223,7 +225,7 @@ updateStatus = async (id, status) => {
               votingProposals[i] = await this.proposalModel.findByIdAndUpdate(
                 votingProposals[i]._id,
                 {
-                  $set: { status: 'Draw' },
+                  $set: { status: 'Draw' ,votingStatus:false},
                 },
                 { runValidators: true, new: true },
               );
@@ -244,7 +246,7 @@ updateStatus = async (id, status) => {
             await this.proposalModel.findByIdAndUpdate(
               votingProposals[i]._id,
               {
-                $set: { status: 'Fail' },
+                $set: { status: 'Fail' ,votingStatus:false},
               },
               { runValidators: true, new: true },
             );

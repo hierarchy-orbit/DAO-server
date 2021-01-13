@@ -118,7 +118,8 @@ export class ProposalService {
   //  console.log(2)  
     try {
       if(req.body.status == 'Rejected'){
-        const emailResult = await this.NodemailerService.sendEmail(req);
+        const emailResult = await this.NodemailerService.sendEmail(req,"proposalRejection");
+
         console.log('Email', emailResult)
         console.log(3)
       }
@@ -472,8 +473,9 @@ updateStatus = async (id, status) => {
         result.milestone[req.body.index].status = req.body.status;
         result.markModified('milestone');
         result.save();
-        const emailResult = await this.NodemailerService.sendEmail(req);
-     console.log('Email sent',emailResult)
+  
+      const emailResult = await this.NodemailerService.sendEmail(req,"milestoneRejection");
+      console.log('Email sent',emailResult)
       }
       return result;
     } catch (err) {
