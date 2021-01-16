@@ -259,7 +259,7 @@ updateStatus = async (id, status) => {
      data: contract.methods.updateProposalStatus(id, 2).encodeABI(),
       gasPrice: gasPrices.high * 1000000000,
       nonce: count,
-      gasLimit: web3.utils.toHex(25000),
+      gasLimit: web3.utils.toHex(2000000),
     };
     let pr_key =
       process.env.adminPrivateKey;
