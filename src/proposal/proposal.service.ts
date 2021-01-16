@@ -259,7 +259,7 @@ updateStatus = async (id, status) => {
      data: contract.methods.updateProposalStatus(id, 2).encodeABI(),
       gasPrice: gasPrices.high * 1000000000,
       nonce: count,
-      gasLimit: web3.utils.toHex(2000000),
+      gasLimit: web3.utils.toHex(25000),
     };
     let pr_key =
       process.env.adminPrivateKey;
@@ -272,20 +272,21 @@ updateStatus = async (id, status) => {
       .sendSignedTransaction(signed.rawTransaction)
       .on("confirmation", async (confirmationNumber, receipt) => {
         if (confirmationNumber === 1) {
-          console.log('receir', receipt)
-          
-        // await this.updateProposalStatus(id, tempStatus);
+          console.log('receir', receipt)     
+      //    await this.updateProposalStatus(id, tempStatus);
           return true
         }
       })
       .on("error", (error) => {
         console.log('error', error)
-        return false
+        return false  
       })
       .on("transactionHash", async (hash) => {
         console.log("transaction has -->", hash);
         return true
       });
+
+      return true;
   } catch (Err) {
     console.log(Err);
     return false
@@ -295,6 +296,7 @@ updateStatus = async (id, status) => {
 
   VoteOnProposal = async (req, res) => {
   //  console.log('Status',req)
+  let blockChainResult;
     try {
       const proposal = await this.proposalModel.findById(req.params.id);
    //   console.log('Proposal', proposal.status)
@@ -339,6 +341,26 @@ updateStatus = async (id, status) => {
          throw { statusCode: 400, message: 'User cannot vote again' };
         }
       });
+    
+      const checkCount = await this.proposalModel.findById(req.params.id);
+
+      const singleProposal = await this.proposalModel.findById(req.params.id)
+
+      console.log('check count', checkCount.votes.length)
+      console.log('single proposal', singleProposal.minimumUpvotes)
+
+      if (checkCount.votes.length >= singleProposal.minimumUpvotes - 1) {
+        //  console.log('In if checkCount', req.body)
+          let tempStatus = { body:{status: 'Voting'} }
+          console.log('ID here ----->', req.params.id)
+          await this.updateStatus(req.params.id, 2)
+         .then( async (Result: any) => { console.log('Result ---->',Result);
+          if(Result){
+            console.log('In if ===================')
+           await this.updateProposalStatus(req.params.id, tempStatus)
+         
+          } else { console.log('In else');  throw { statusCode: 400, message: 'Transaction failed' };}  }  )
+         .catch((err) => {console.log('In catch', err); throw { statusCode: 400, message: 'Transaction failed' };})
 
       const result = await this.proposalModel.findByIdAndUpdate(
         req.params.id,
@@ -355,25 +377,24 @@ updateStatus = async (id, status) => {
         { $push: { proposalVote: result._id } },
       );
 
-      const checkCount = await this.proposalModel.findById(req.params.id);
       const Attributes = await this.DAOAttributesModel.find().exec();
       if (Attributes.length == 0) {
    //     console.log('In if 6')
     //    console.log('Here')
         throw { statusCode: 404, message: 'No attributes found!' };
       }
-      if (checkCount.votes.length > result.minimumUpvotes - 1) {
-      //  console.log('In if checkCount', req.body)
-        let tempStatus = { body:{status: 'Voting'} }
-        console.log('ID here ----->', req.params.id)
-      const blockChainResult =  await this.updateStatus(req.params.id, 2)
-      console.log('Blockchain result ======>',blockChainResult)
-      if(blockChainResult){
-        console.log('Blockchain result ======>',blockChainResult)}
-      // if(blockChainResult) {
-      //   await this.updateProposalStatus(req.params.id, tempStatus);
-      // }
-       await this.updateProposalStatus(req.params.id, tempStatus)
+      // if (checkCount.votes.length > result.minimumUpvotes - 1) {
+      // //  console.log('In if checkCount', req.body)
+      //   let tempStatus = { body:{status: 'Voting'} }
+      //   console.log('ID here ----->', req.params.id)
+      //   await this.updateStatus(req.params.id, 2)
+      //  .then( async (Result: any) => { console.log('Result ---->',Result);
+      //   if(Result){
+      //     console.log('In if ===================')
+      //    await this.updateProposalStatus(req.params.id, tempStatus)
+       
+      //   } else { console.log('In else');  throw { statusCode: 400, message: 'Transaction failed' };}  }  )
+      //  .catch((err) => {console.log('In catch', err); throw { statusCode: 400, message: 'Transaction failed' };})
         let date = new Date();  
         if (date.getDate() < 16) {
           date = moment(Date.now()) 
@@ -399,6 +420,7 @@ updateStatus = async (id, status) => {
      //   console.log(tempX)
       }
       console.log('Success')
+      console.log('Blockchain result', blockChainResult)
       return 'Success';
     } catch (err) {
       console.log("check error now",err)
