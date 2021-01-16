@@ -268,6 +268,7 @@ updateStatus = async (id, status) => {
       pr_key
     );
     let tempStatus = { body:{status: 'Voting'} }
+    console.log('Working')
     await web3.eth
       .sendSignedTransaction(signed.rawTransaction)
       .on("confirmation", async (confirmationNumber, receipt) => {
