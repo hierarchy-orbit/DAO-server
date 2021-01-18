@@ -39,7 +39,6 @@ export class ProposalService {
   getAllProposals = async () => {
     console.log('Working here')
     try {
-      console.log('Working here')
       let proposals = await this.proposalModel.find();
       let serverDate= moment(Date.now()).format();
       for(let i=0 ; i < proposals.length; i++){
