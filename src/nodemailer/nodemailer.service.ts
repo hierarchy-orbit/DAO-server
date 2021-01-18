@@ -29,15 +29,28 @@ export class NodemailerService {
     try {
 ​
       var transporter = nodemailer.createTransport({
-        //service: "gmail",
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        requireTLS: true,
-        auth: {
-          user: 'samadhello9812@gmail.com' ,
-          pass: 'deutschland9812',
-        },
+ 
+        // host: "Gmail",
+        // port: 587,
+        // secure: false,
+        // requireTLS: true,
+        // auth: {
+        //   user: 'samadhello9812@gmail.com' ,
+        //   pass: 'deutschland9812',
+        // },
+
+
+        service: "Gmail",
+  port: 587,
+  secure: false,
+  auth: {
+    user: "samadhello9812@gmail.com",
+    pass: process.env.EmailPassword,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+
       });
 
 ​
