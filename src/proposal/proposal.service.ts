@@ -253,6 +253,7 @@ updateStatus = async (id, status) => {
     );
     let gasPrices = await this.getCurrentGasPrices();
     console.log(gasPrices);
+    console.log('Working')
     let rawTransaction = {
       from: "0x51a73C48c8A9Ef78323ae8dc0bc1908A1C49b6c6",
       to: '0x5579fBfD5417758Bf276276aFb597b7C6b30786E',
