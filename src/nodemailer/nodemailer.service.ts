@@ -21,6 +21,8 @@ export class NodemailerService {
   constructor() { }
 ​
   sendEmail = async (req,type) => {
+    
+    let adminEmail = 'samadhello9812@gmail.com'
     // console.log('Working here')
     // //console.log('Request', req)
     console.log('Name -->', req.body.name)
@@ -34,15 +36,14 @@ export class NodemailerService {
         secure: false,
         requireTLS: true,
         auth: {
-          // user: "samadhello9812@gmail.com",
-          // pass: "deutschland9812",
-          user: process.env.EmailUserName,
+          user: adminEmail,
           pass: process.env.EmailPassword,
         },
       });
+
 ​
       var mailOptions = {
-        from: process.env.EmailUserName,
+        from: adminEmail,
         to: req.body.email,
         //to: 'samad@yopmail.com',
         subject: "PHNX-Dao reason for rejection.",
@@ -59,7 +60,7 @@ export class NodemailerService {
         <br />
 ​
         <h3> To: <span>${req.body.email}</span> </h3>
-        <h3> From: <span>${process.env.EmailUserName}</span> </h3>
+        <h3> From: <span>${adminEmail}</span> </h3>
 ​
         <h3>Proposal Name: <span> ${type=="proposalRejection" ? req.body.proposalName : req.body.name} </span> </h3>
           <h3 >Reason for rejection: ${req.body.reasonForRejecting}</h3>

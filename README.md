@@ -6,19 +6,20 @@
 [travis-url]: https://travis-ci.org/nestjs/nest
 [linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
 [linux-url]: https://travis-ci.org/nestjs/nest
-  
+
   <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
 
-# PheonixDAO-Server
+# PhoenixDAO-Server
 
 ## Description
-Pheonix-DAO Server repository. The Application allows users to authenticate themself through MetaMask and Numio. Users can then add proposals, vote on proposals, stake on proposals and view updates. Admin approve the proposals so the users can vote on them. If a proposal is accepted after clearing the voting stage, then user can mark the milestones of proposal as completed and admin reviews and verifies it to issue funds.<br/>
+
+Phoenix-DAO Server repository. The Application allows users to authenticate themself through MetaMask and Numio. Users can then add proposals, vote on proposals, stake on proposals and view updates. Admin approve the proposals so the users can vote on them. If a proposal is accepted after clearing the voting stage, then user can mark the milestones of proposal as completed and admin reviews and verifies it to issue funds.<br/>
 
 ## About App
+
 PhoenixDAO is a truly decentralized, open-source project that covers identity, payments, tokenization, authentication, and storage, alongside a dApp Store which sits at the heart of the Phoenix ecosystem. A core part of the PhoenixDAO strategy is to actively on-board both individual developers and enterprise level corporations to build using the protocols to power their products. This will enhance decentralization, token utility and the overall ecosystem.
 
-
-* Functions/Modules 
+- Functions/Modules
   - Admin
   - Auth
   - User
@@ -26,10 +27,10 @@ PhoenixDAO is a truly decentralized, open-source project that covers identity, p
   - Stake
   - Transaction
   - Cron
- 
- Few keys that needed to be updated. Create .env file and update things that are mentioned below
 
-* Updates Required
+Few keys that needed to be updated. Create .env file and update things that are mentioned below
+
+- Updates Required
   - DATABASE_URL
   - private_key
   - SECRET_KEY
@@ -38,15 +39,15 @@ PhoenixDAO is a truly decentralized, open-source project that covers identity, p
 
 Create these variables in your ".env" file and assign your values to these variables.
 
-
 ### Integrated Stack
-  - Web3
-  - Smartcontract
-  - MetaMask
-  - Numio
 
+- Web3
+- Smartcontract
+- MetaMask
+- Numio
 
 ## File Structure
+
 <pre>
 app    
 ├── src  
@@ -97,7 +98,9 @@ app
 └── main.ts
 └── .env  
 </pre>
+
 ## App Link
+
 [Pheonix-DAO Server](https://phoenix-dao-backend.herokuapp.com)
 
 ## Installation
@@ -132,8 +135,6 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-
-
 ## License
 
-  Nest is [MIT licensed](LICENSE).
+Nest is [MIT licensed](LICENSE).
