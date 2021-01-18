@@ -8,7 +8,7 @@ let transporter = nodemailer.createTransport({
   secure: false,
   auth: {
     user: 'samadhello9812@gmail.com',
-    pass: 'jeaeyzpgullwdbjq',
+    pass: 'igsbetfxlesuxkrs',
   },
   tls: {
     rejectUnauthorized: false,

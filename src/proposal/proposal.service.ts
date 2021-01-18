@@ -382,64 +382,69 @@ export class ProposalService {
             console.log('In catch', err);
             throw { statusCode: 400, message: 'Transaction failed' };
           });
-
-        const result = await this.proposalModel.findByIdAndUpdate(
-          req.params.id,
-          {
-            $push: {
-              votes: { date: Date.now(), email: req.body.email },
-            },
-          },
-          { runValidators: true, new: true },
-        );
-
-        const result2 = await this.userModel.findOneAndUpdate(
-          { email: req.body.email },
-          { $push: { proposalVote: result._id } },
-        );
-
-        const Attributes = await this.DAOAttributesModel.find().exec();
-        if (Attributes.length == 0) {
-          //     console.log('In if 6')
-          //    console.log('Here')
-          throw { statusCode: 404, message: 'No attributes found!' };
-        }
-        // if (checkCount.votes.length > result.minimumUpvotes - 1) {
-        // //  console.log('In if checkCount', req.body)
-        //   let tempStatus = { body:{status: 'Voting'} }
-        //   console.log('ID here ----->', req.params.id)
-        //   await this.updateStatus(req.params.id, 2)
-        //  .then( async (Result: any) => { console.log('Result ---->',Result);
-        //   if(Result){
-        //     console.log('In if ===================')
-        //    await this.updateProposalStatus(req.params.id, tempStatus)
-
-        //   } else { console.log('In else');  throw { statusCode: 400, message: 'Transaction failed' };}  }  )
-        //  .catch((err) => {console.log('In catch', err); throw { statusCode: 400, message: 'Transaction failed' };})
-        let date = new Date();
-        if (date.getDate() < 16) {
-          date = moment(Date.now())
-            .add(1, 'M')
-            .format('YYYY-MM-02');
-          console.log('Date ---->', date);
-        } else {
-          date = moment(Date.now())
-            .add(2, 'M')
-            .format('YYYY-MM-02');
-          console.log('Date ---->', date);
-        }
-        // console.log('============================', date)
-        // console.log('Set Month above', req.params.id)
-
-        const setMonth = await this.proposalModel.findByIdAndUpdate(
-          req.params.id,
-          { $set: { votingDate: date } },
-        );
-
-        //   console.log('Set month Below')
-        const tempX = await this.proposalModel.findById(req.params.id);
-        //   console.log(tempX)
       }
+
+      const result = await this.proposalModel.findByIdAndUpdate(
+        req.params.id,
+        {
+          $push: {
+            votes: { date: Date.now(), email: req.body.email },
+          },
+        },
+        { runValidators: true, new: true },
+      );
+
+      console.log('Result email', result);
+
+      const result2 = await this.userModel.findOneAndUpdate(
+        { email: req.body.email },
+        { $push: { proposalVote: result._id } },
+      );
+
+      console.log('Result 2', result2);
+
+      const Attributes = await this.DAOAttributesModel.find().exec();
+      if (Attributes.length == 0) {
+        //     console.log('In if 6')
+        //    console.log('Here')
+        throw { statusCode: 404, message: 'No attributes found!' };
+      }
+      // if (checkCount.votes.length > result.minimumUpvotes - 1) {
+      // //  console.log('In if checkCount', req.body)
+      //   let tempStatus = { body:{status: 'Voting'} }
+      //   console.log('ID here ----->', req.params.id)
+      //   await this.updateStatus(req.params.id, 2)
+      //  .then( async (Result: any) => { console.log('Result ---->',Result);
+      //   if(Result){
+      //     console.log('In if ===================')
+      //    await this.updateProposalStatus(req.params.id, tempStatus)
+
+      //   } else { console.log('In else');  throw { statusCode: 400, message: 'Transaction failed' };}  }  )
+      //  .catch((err) => {console.log('In catch', err); throw { statusCode: 400, message: 'Transaction failed' };})
+      let date = new Date();
+      if (date.getDate() < 16) {
+        date = moment(Date.now())
+          .add(1, 'M')
+          .format('YYYY-MM-02');
+        console.log('Date ---->', date);
+      } else {
+        date = moment(Date.now())
+          .add(2, 'M')
+          .format('YYYY-MM-02');
+        console.log('Date ---->', date);
+      }
+      // console.log('============================', date)
+      // console.log('Set Month above', req.params.id)
+
+      const setMonth = await this.proposalModel.findByIdAndUpdate(
+        req.params.id,
+        { $set: { votingDate: date } },
+      );
+
+      //   console.log('Set month Below')
+      const tempX = await this.proposalModel.findById(req.params.id);
+      //   console.log(tempX)
+
       console.log('Success');
       console.log('Blockchain result', blockChainResult);
       return 'Success';
