@@ -47,7 +47,7 @@ export class AppModule implements NestModule {
         { path: 'auth/login', method: RequestMethod.ALL },
         { path: 'auth/numio', method: RequestMethod.ALL },
         { path: 'auth/metamask', method: RequestMethod.ALL },
-      );
-    // .forRoutes({ path: '*', method: RequestMethod.ALL });
+      )
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
