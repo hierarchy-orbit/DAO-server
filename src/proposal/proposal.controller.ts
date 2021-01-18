@@ -49,7 +49,7 @@ export class ProposalController {
   @Post('/vote/:id')
   async voteOnProposal(@Req() req: Request, @Res() res: Response) {
     try {
-      console.log('COntroller ', req.body)
+      console.log('COntroller ', req.body);
       const result = await this.ProposalService.VoteOnProposal(req, res);
       res.status(200).send({
         statusCode: 200,
@@ -67,7 +67,7 @@ export class ProposalController {
   @Get('/:id')
   async getProposalsById(@Req() req: Request, @Res() res: Response) {
     try {
-      console.log(req.params.id)
+      console.log(req.params.id);
       const result = await this.ProposalService.getProposalsById(req.params.id);
       if (result) {
         res.status(200).send({
@@ -93,7 +93,7 @@ export class ProposalController {
     try {
       const result: any = await this.ProposalService.updateProposalStatus(
         req.params.id,
-        req
+        req,
       );
       if (result) {
         res.status(200).send({
@@ -113,7 +113,6 @@ export class ProposalController {
       });
     }
   }
-  ;
   // Here we get a proposal by NUMIOADDRESS
   @Post('/getByNumioAddress')
   async getByNumioAddress(@Req() req: Request, @Res() res: Response) {
@@ -243,7 +242,7 @@ export class ProposalController {
       const result = await this.ProposalService.updateProposal(req);
       res.status(200).send({ responseCode: 200, result: result });
     } catch (err) {
-      console.log("err",err)
+      console.log('err', err);
       res.status(400).send({
         responseCode: err.statusCode,
         result: err.message,
@@ -256,6 +255,19 @@ export class ProposalController {
   async deleteProposal(@Req() req: Request, @Res() res: Response) {
     try {
       const result = await this.ProposalService.deleteProposal(req);
+      res.status(200).send({ responseCode: 200, result: result });
+    } catch (err) {
+      res.status(err.statusCode).send({
+        responseCode: err.statusCode,
+        result: err.message,
+      });
+    }
+  }
+
+  @Post('/sendMail')
+  async sendMail(@Req() req: Request, @Res() res: Response) {
+    try {
+      const result = await this.ProposalService.sendMail(req);
       res.status(200).send({ responseCode: 200, result: result });
     } catch (err) {
       res.status(err.statusCode).send({

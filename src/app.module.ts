@@ -18,7 +18,7 @@ import { StakeModule } from './stake/stake.module';
 import { AdminModule } from './admin/admin.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
-import { NodemailerService } from './nodemailer/nodemailer.service'
+import { NodemailerService } from './nodemailer/nodemailer.service';
 
 @Module({
   imports: [
@@ -47,7 +47,7 @@ export class AppModule implements NestModule {
         { path: 'auth/login', method: RequestMethod.ALL },
         { path: 'auth/numio', method: RequestMethod.ALL },
         { path: 'auth/metamask', method: RequestMethod.ALL },
-      )
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+      );
+    // .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

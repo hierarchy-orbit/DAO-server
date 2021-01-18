@@ -1,80 +1,76 @@
-import { Injectable } from "@nestjs/common";
-const nodemailer = require("nodemailer");
-require("dotenv").config();
+import { Injectable } from '@nestjs/common';
+const nodemailer = require('nodemailer');
+require('dotenv').config();
 //nodemailer configuration
-​
-// let transporter = nodemailer.createTransport({
-//   service: "Gmail",
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: process.env.USER,
-//     pass: process.env.PASSWORD,
-//   },
-//   tls: {
-//     rejectUnauthorized: false,
-//   },
-// });
-​
-@Injectable()
-export class NodemailerService {
-  constructor() { }
-​
-  sendEmail = async (req,type) => {
-    
-    // console.log('Working here')
-    // //console.log('Request', req)
-    console.log('Name -->', req.body.email)
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
-    try {
-​
-      var transporter = nodemailer.createTransport({
- 
-        // host: "Gmail",
-        // port: 587,
-        // secure: false,
-        // requireTLS: true,
-        // auth: {
-        //   user: 'samadhello9812@gmail.com' ,
-        //   pass: 'deutschland9812',
-        // },
-
-
-        service: "Gmail",
+let transporter = nodemailer.createTransport({
+  service: 'Gmail',
   port: 587,
   secure: false,
   auth: {
-    user: "samadhello9812@gmail.com",
-    pass: process.env.EmailPassword,
+    user: 'samadhello9812@gmail.com',
+    pass: 'jeaeyzpgullwdbjq',
   },
   tls: {
     rejectUnauthorized: false,
   },
+});
+@Injectable()
+export class NodemailerService {
+  constructor() {}
+  sendEmail = async (req, type) => {
+    // console.log('Working here')
+    console.log('Password ====>', process.env.EmailPassword);
+    // //console.log('Request', req)
+    console.log('Name -->', req.body.email);
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    try {
+      // var transporter = nodemailer.createTransport({
+      //   // host: "Gmail",
+      //   // port: 587,
+      //   // secure: false,
+      //   // requireTLS: true,
+      //   // auth: {
+      //   //   user: 'samadhello9812@gmail.com' ,
+      //   //   pass: 'deutschland9812',
+      //   // },
+      //   service: 'Gmail',
+      //   port: 587,
+      //   secure: false,
+      //   auth: {
+      //     user: 'samadhello9812@gmail.com',
+      //     pass: process.env.EmailPassword,
+      //   },
+      //   tls: {
+      //     rejectUnauthorized: false,
+      //   },
+      // });
 
-      });
-
-​
       var mailOptions = {
-        from: 'samadhello9812@gmail.com',
+        from: '',
         to: req.body.email,
         //to: 'samad@yopmail.com',
-        subject: "PHNX-Dao reason for rejection.",
+        subject: 'PHNX-Dao reason for rejection.',
         text: req.body.reasonForRejecting,
         //text: 'req.body.reasonFo=rRejectng',
-        html:
-          `
+        html: `
         <div style=" background-color: white" >
         <img src="cid:logo" style="
         margin-left: -9px;" alt="Pheonix Dao" width="230px"/>
         <br/>
-        <h3 style="font-style: 100%" > ${type=="proposalRejection" ? "Your proposal has been rejected" : "Your milestone has been rejected"}</h3>
+        <h3 style="font-style: 100%" > ${
+          type == 'proposalRejection'
+            ? 'Your proposal has been rejected'
+            : 'Your milestone has been rejected'
+        }</h3>
         <hr />
         <br />
 ​
         <h3> To: <span>${req.body.email}</span> </h3>
         <h3> From: <span>samadhello9812@gmail.com</span> </h3>
 ​
-        <h3>Proposal Name: <span> ${type=="proposalRejection" ? req.body.proposalName : req.body.name} </span> </h3>
+        <h3>Proposal Name: <span> ${
+          type == 'proposalRejection' ? req.body.proposalName : req.body.name
+        } </span> </h3>
           <h3 >Reason for rejection: ${req.body.reasonForRejecting}</h3>
           <br/>
           <p>
@@ -83,31 +79,26 @@ export class NodemailerService {
           <p>The PheonixDao Team</P>
         </div>
         `,
-        attachments: [{
-          filename: 'Logo.png',
-          path: __dirname + '/assets/logo.png',
-          cid: 'logo' //my mistake was putting "cid:logo@cid" here! 
-        }]
-​
+        attachments: [
+          {
+            filename: 'Logo.png',
+            path: __dirname + '/assets/logo.png',
+            cid: 'logo', //my mistake was putting "cid:logo@cid" here!
+          },
+        ],
       };
-​
-      transporter.sendMail(mailOptions, function (error, info) {
+      transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
           console.log('123', error);
         } else {
-          console.log("Email sent: ", info.response);
+          console.log('Email sent: ', info.response);
         }
       });
-​
-​
+    } catch (e) {
+      console.log('Error ======>', e);
+      throw e;
     }
-    catch (e) {
-      console.log('Error ======>',e)
-      throw e
-​
-    }
-  }
-​
+  };
   //function to send invoice mail to payer
   // sendInvoiceToPayerEmail = async (invoiceData) => {
   //   try {
@@ -131,7 +122,6 @@ export class NodemailerService {
   //     throw "Email not Send";
   //   }
   // };
-​
   // sendMailToContactUs = async (invoiceData) => {
   //   try {
   //     let info = await transporter.sendMail({
@@ -152,7 +142,6 @@ export class NodemailerService {
   //     throw "Email not Send";
   //   }
   // };
-​
   // Test = async () => {
   //   try {
   //     let info = await transporter.sendMail({
@@ -172,7 +161,6 @@ export class NodemailerService {
   //     throw e;
   //   }
   // };
-​
   // appointmentConfirmation = async (
   //   invoiceData,
   //   appointment_details,
@@ -202,7 +190,6 @@ export class NodemailerService {
   //     throw e;
   //   }
   // };
-​
   // informDoctor = async (invoiceData, appointment_details, patient) => {
   //   try {
   //     let info = await transporter.sendMail({
@@ -228,24 +215,25 @@ export class NodemailerService {
   //     throw e;
   //   }
   // };
-​
-  // mailToCustomMail = async (invoiceData) => {
-  //   try {
-  //     const resultFromPayer = await this.sendInvoiceToPayerEmail(invoiceData);
-  //     return resultFromPayer;
-  //   } catch (e) {
-  //     console.log("catching error in mail==>", e);
-  //     throw "Email not Send";
-  //   }
-  // };
-​
-  // contactUs = async (invoiceData) => {
-  //   try {
-  //     const resultFromPayer = await this.sendMailToContactUs(invoiceData);
-  //     return resultFromPayer;
-  //   } catch (e) {
-  //     console.log("view error ", e);
-  //     throw "Email not Send";
-  //   }
-  // };
+  sendTestMail = async req => {
+    try {
+      let info = await transporter.sendMail({
+        from: '', // sender address
+        to: '' + `${'samad13354@gmail.com'}`, //receiver email
+        subject: 'Telemed.App Appointment Confirmation', // Subject line
+        html: `
+                      <br/>
+                      <span/><b>Appointment Time</b><br/>
+                      </p>`,
+      });
+      const mail = {
+        info: info,
+      };
+      console.log('check mail now', mail);
+      return mail;
+    } catch (e) {
+      console.log('catching error in mail==>', e);
+      throw 'Email not Send';
+    }
+  };
 }
