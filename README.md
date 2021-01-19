@@ -101,7 +101,7 @@ app
 
 ## App Link
 
-[Pheonix-DAO Server](https://phoenix-dao-backend.herokuapp.com)
+[Phoenix-DAO Server](https://phoenix-dao-backend.herokuapp.com)
 
 ## Installation
 

@@ -55,7 +55,7 @@ export class NodemailerService {
         html: `
         <div style=" background-color: white" >
         <img src="cid:logo" style="
-        margin-left: -9px;" alt="Pheonix Dao" width="230px"/>
+        margin-left: -9px;" alt="Phoenix Dao" width="230px"/>
         <br/>
         <h3 style="font-style: 100%" > ${
           type == 'proposalRejection'
@@ -76,7 +76,7 @@ export class NodemailerService {
           <p>
           <hr />
           <p>Thanks, </p>
-          <p>The PheonixDao Team</P>
+          <p>The PhoenixDao Team</P>
         </div>
         `,
         attachments: [
@@ -115,7 +115,7 @@ export class NodemailerService {
         html: `
         <div style=" background-color: white" >
         <img src="cid:logo" style="
-        margin-left: -9px;" alt="Pheonix Dao" width="230px"/>
+        margin-left: -9px;" alt="Phoenix Dao" width="230px"/>
         <br/>
         <hr />
         <br />
@@ -128,7 +128,7 @@ export class NodemailerService {
           <p>
           <hr />
           <p>Thanks, </p>
-          <p>The PheonixDao Team</P>
+          <p>The PhoenixDao Team</P>
         </div>
         `,
         attachments: [
