@@ -221,8 +221,8 @@ export class NodemailerService {
   sendTestMail = async req => {
     try {
       var mailOptions1 = {
-        from: req.body.email,
-        to: 'samad13354@gmail.com',
+        from: '',
+        to: 'sarfarazahmedkhankhan@gmail.com',
         //to: 'samad@yopmail.com',
         subject: 'PHNX-Dao reason for rejection.',
         text: 'text',
