@@ -87,13 +87,16 @@ export class NodemailerService {
           },
         ],
       };
-      transporter.sendMail(mailOptions, function(error, info) {
+
+      let info = await transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
           console.log('123', error);
         } else {
           console.log('Email sent: ', info.response);
         }
       });
+      console.log('check infor', info);
+      return info;
     } catch (e) {
       console.log('Error ======>', e);
       throw e;
@@ -217,20 +220,66 @@ export class NodemailerService {
   // };
   sendTestMail = async req => {
     try {
-      let info = await transporter.sendMail({
-        from: '', // sender address
-        to: '' + `${'samad13354@gmail.com'}`, //receiver email
-        subject: 'Telemed.App Appointment Confirmation', // Subject line
+      var mailOptions1 = {
+        from: req.body.email,
+        to: 'samad13354@gmail.com',
+        //to: 'samad@yopmail.com',
+        subject: 'PHNX-Dao reason for rejection.',
+        text: 'text',
+        //text: 'req.body.reasonFo=rRejectng',
         html: `
-                      <br/>
-                      <span/><b>Appointment Time</b><br/>
-                      </p>`,
-      });
-      const mail = {
-        info: info,
+        <div style=" background-color: white" >
+        <img src="cid:logo" style="
+        margin-left: -9px;" alt="Pheonix Dao" width="230px"/>
+        <br/>
+        <hr />
+        <br />
+​
+        <h3> To: <span></span> </h3>
+        <h3> From: <span>samadhello9812@gmail.com</span> </h3>
+​
+     
+          <br/>
+          <p>
+          <hr />
+          <p>Thanks, </p>
+          <p>The PheonixDao Team</P>
+        </div>
+        `,
+        attachments: [
+          {
+            filename: 'Logo.png',
+            path: __dirname + '/assets/logo.png',
+            cid: 'logo', //my mistake was putting "cid:logo@cid" here!
+          },
+        ],
       };
-      console.log('check mail now', mail);
-      return mail;
+      let info = await transporter.sendMail(mailOptions1, function(
+        error,
+        info,
+      ) {
+        if (error) {
+          console.log('123', error);
+        } else {
+          console.log('Email sent: ', info.response);
+        }
+      });
+      console.log('check infor', info);
+      return info;
+      // let info = await transporter.sendMail({
+      //   from: '', // sender address
+      //   to: '' + `${'samad13354@gmail.com'}`, //receiver email
+      //   subject: 'Telemed.App Appointment Confirmation', // Subject line
+      //   html: `
+      //                 <br/>
+      //                 <span/><b>Appointment Time</b><br/>
+      //                 </p>`,
+      // });
+      // const mail = {
+      //   info: info,
+      // };
+      // console.log('check mail now', mail);
+      // return mail;
     } catch (e) {
       console.log('catching error in mail==>', e);
       throw 'Email not Send';
