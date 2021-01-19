@@ -82,7 +82,7 @@ export class NodemailerService {
         attachments: [
           {
             filename: 'Logo.png',
-            path: __dirname + '/assets/logo.png',
+            path: './logo.png',
             cid: 'logo', //my mistake was putting "cid:logo@cid" here!
           },
         ],
@@ -249,7 +249,7 @@ export class NodemailerService {
         attachments: [
           {
             filename: 'Logo.png',
-            path: __dirname + '/assets/logo.png',
+            path: './logo.png',
             cid: 'logo', //my mistake was putting "cid:logo@cid" here!
           },
         ],
