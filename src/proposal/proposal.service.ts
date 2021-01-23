@@ -196,7 +196,7 @@ export class ProposalService {
       console.log(11);
       return result;
     } catch (err) {
-      console.log('----//////', err);
+      console.log('----////// error here', err);
       throw err;
     }
   };
