@@ -14,14 +14,15 @@ export const ProposalSchema = new Schema(
     stake: [],
     votes: [],
     minimumUpvotes: { type: Number },
-    votingStatus: {type:Boolean, default:false},
+    votingStatus: { type: Boolean, default: false },
     numioAddress: { type: String, required: true },
     collateral: { type: Number, required: true },
     reward: { type: Number, required: false },
     status: {
       type: String,
-      default: 'Pending',
+      default: 'InTransaction',
       enum: [
+        'InTransaction',
         'Pending',
         'Rejected',
         'Accepted',
@@ -29,7 +30,7 @@ export const ProposalSchema = new Schema(
         'Voting',
         'Draw',
         'Fail',
-        'Completed'
+        'Completed',
       ],
     },
     githubLink: { type: String, default: '' },
@@ -43,7 +44,7 @@ export const ProposalSchema = new Schema(
     // personalExperience: { type: String, required: false },
     experiencedYear: { type: Number, required: false },
     duration: { type: Number, required: true },
-    userProfession: { type: String, required: true }
+    userProfession: { type: String, required: true },
   },
   { timestamps: true },
 );

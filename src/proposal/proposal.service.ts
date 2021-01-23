@@ -245,6 +245,8 @@ export class ProposalService {
     }
   };
 
+  // Blockchain Function
+
   updateStatus = async (id, status) => {
     console.log('Address ====>', PHNX_PROPOSAL_ADDRESS);
     console.log('ID', id);
@@ -637,7 +639,7 @@ export class ProposalService {
       if (!user) {
         throw {
           statusCode: 404,
-          message: 'User with provided numioAddress doesnot exist',
+          message: 'User with provided numioAddress does not exist',
         };
       }
       if (user.numioAddress != proposal.numioAddress) {
@@ -681,7 +683,11 @@ export class ProposalService {
       if (!proposal) {
         throw { statusCode: 404, message: 'Proposal not found!' };
       }
-      if (proposal.status != 'Pending' && proposal.status != 'Rejected') {
+      if (
+        proposal.status != 'Pending' &&
+        proposal.status != 'InTransaction' &&
+        proposal.status != 'Rejected'
+      ) {
         throw {
           statusCode: 400,
           message: 'Proposal can not be deleted !',
@@ -693,7 +699,7 @@ export class ProposalService {
       if (!user) {
         throw {
           statusCode: 404,
-          message: 'User with provided numioAddress doesnot exist',
+          message: 'User with provided numioAddress does not exist',
         };
       }
       if (user.numioAddress != proposal.numioAddress) {
