@@ -627,7 +627,11 @@ export class ProposalService {
       if (!proposal) {
         throw { statusCode: 404, message: 'Proposal not found!' };
       }
-      if (proposal.status != 'Pending') {
+      if (
+        proposal.status != 'Pending' ||
+        proposal.status != 'Fail' ||
+        proposal.status != 'Rejected'
+      ) {
         throw {
           statusCode: 400,
           message: 'Proposal can not be updated !',
