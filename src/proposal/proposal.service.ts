@@ -108,8 +108,6 @@ export class ProposalService {
     try {
       const result = await this.proposalModel.findById(id);
       console.log('Get proposal by ID', result);
-      console.log('Getting a proposal by ID ------>');
-      console.log('Working');
 
       return result;
     } catch (err) {
