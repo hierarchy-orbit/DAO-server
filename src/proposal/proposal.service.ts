@@ -92,8 +92,6 @@ export class ProposalService {
         minimumUpvotes: Attributes[0].minimumUpvotes,
       };
       const createdProposal = await this.proposalModel.create(data);
-      console.log('Create proposal ------>', createdProposal);
-      console.log('Working');
       if (!createdProposal) {
         throw { statusCode: 404, message: 'Proposal not created' };
       }
@@ -107,8 +105,6 @@ export class ProposalService {
   getProposalsById = async id => {
     try {
       const result = await this.proposalModel.findById(id);
-      console.log('Get proposal by ID', result);
-
       return result;
     } catch (err) {
       throw 'No Proposal Found';
