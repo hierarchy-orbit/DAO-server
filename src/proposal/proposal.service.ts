@@ -92,6 +92,7 @@ export class ProposalService {
         minimumUpvotes: Attributes[0].minimumUpvotes,
       };
       const createdProposal = await this.proposalModel.create(data);
+      console.log('Create proposal ------>', createdProposal);
       if (!createdProposal) {
         throw { statusCode: 404, message: 'Proposal not created' };
       }
