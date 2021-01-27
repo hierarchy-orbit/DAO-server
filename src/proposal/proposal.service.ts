@@ -455,7 +455,7 @@ export class ProposalService {
   };
 
   getProposalsByStatus = async req => {
-    console.log('Working');
+    console.log('Working here -->');
     try {
       let proposals = await this.proposalModel.find({
         status: req.body.status,
