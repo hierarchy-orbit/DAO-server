@@ -71,6 +71,7 @@ export class ProposalService {
   };
 
   postProposal = async (req, res) => {
+    console.log('Working in post proposal');
     console.log('In post proposal here 123');
     let serverDate = moment(Date.now()).format();
     console.log('Server Date =======>>', serverDate);
