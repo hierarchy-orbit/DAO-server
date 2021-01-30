@@ -120,6 +120,16 @@ export class ProposalService {
     //  const {status, reasonForRejecting} = req.body;
     //  console.log(2)
     try {
+      // if (req.body.status == 'Completed') {
+      //   await this.proposalModel.findByIdAndUpdate(
+      //     req.body.id,
+      //     {
+      //       $set: { status: 'Completed' },
+      //     },
+      //     { runValidators: true, new: true },
+      //   );
+      // }
+
       if (req.body.status == 'Rejected') {
         const emailResult = await this.NodemailerService.sendEmail(
           req,
@@ -308,7 +318,7 @@ export class ProposalService {
   };
 
   VoteOnProposal = async (req, res) => {
-    //  console.log('Status',req)
+    console.log('Status', req.body);
     let blockChainResult;
     try {
       const proposal = await this.proposalModel.findById(req.params.id);
@@ -530,6 +540,31 @@ export class ProposalService {
           req,
           'milestoneRejection',
         );
+        console.log('Result --->', result);
+        console.log('milestone length', result.milestone.length);
+        // result.milestone.map(milestone => {
+        //   if (milestone.status == 'Completed') {
+        //     let tempStatus={req:{body:'Completed'}}
+        //     totalMilestonesCompleted++;
+        //     if (result.milestone.length == totalMilestonesCompleted) {
+        //       await this.updateProposalStatus(req.params.id, tempStatus);
+        //       console.log('Change status to completed');
+        //     }
+        //   }
+        // });
+        // let totalMilestonesCompleted = 0;
+        // console.log('Status here', result.milestone[0].status);
+        // for (let i = 0; i < result.milestone.length; i++) {
+        //   console.log('check=====>', result.milestone[i]);
+        //   console.log('I ------------>', i);
+        //   if (result.milestone[i].status == 'Completed') {
+        //     totalMilestonesCompleted += totalMilestonesCompleted;
+        //     if (result.milestone.length == totalMilestonesCompleted) {
+        //       let tempStatus = { body: { status: 'Completed' } };
+        //       await this.updateProposalStatus(req.params.id, tempStatus);
+        //     }
+        //   }
+        // }
         console.log('Email sent', emailResult);
       }
       return result;
