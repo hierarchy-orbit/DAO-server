@@ -779,4 +779,9 @@ export class ProposalService {
       throw err;
     }
   };
+
+  testing = async req => {
+    console.log('Testing');
+    return true;
+  };
 }
