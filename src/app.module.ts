@@ -20,6 +20,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
 import { NodemailerService } from './nodemailer/nodemailer.service';
 
+console.log('----->', process.env.DATABASE_URL);
 @Module({
   imports: [
     ConfigModule.forRoot(),
