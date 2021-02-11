@@ -662,7 +662,7 @@ export class ProposalService {
       if (!proposal) {
         throw { statusCode: 404, message: 'Proposal not found!' };
       }
-      console.log('Updating proposal', proposal.status);
+      console.log('Updating proposal', proposal);
       if (
         proposal.status != 'Pending' &&
         proposal.status != 'Fail' &&
@@ -686,6 +686,12 @@ export class ProposalService {
       if (user.numioAddress != proposal.numioAddress) {
         throw { statusCode: 401, message: 'Unauthorized!' };
       }
+      if (proposal.counter > 6) {
+        throw {
+          statusCode: 429,
+          message: 'Editing proposal limit has exceeded',
+        };
+      }
       console.log('req.body is ', req.body);
       const updateProposal = await this.proposalModel.findByIdAndUpdate(
         proposal._id,
@@ -708,9 +714,18 @@ export class ProposalService {
           // reward: req.body.reward,
           numioAddress: req.body.numioAddress,
           milestone: req.body.milestone,
+          // counter: proposal.counter + 1,
         },
         { runValidators: true, new: true },
       );
+      if (proposal.status != 'Pending')
+        await this.proposalModel.findByIdAndUpdate(
+          proposal._id,
+          {
+            $set: { counter: proposal.counter + 1 },
+          },
+          { runValidators: true, new: true },
+        );
       console.log('updated', updateProposal);
       return updateProposal;
     } catch (err) {

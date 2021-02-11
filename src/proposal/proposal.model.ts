@@ -43,6 +43,7 @@ export const ProposalSchema = new Schema(
     experiencedYear: { type: Number, required: false },
     duration: { type: Number, required: true },
     userProfession: { type: String, required: true },
+    counter: { type: Number, default: 0 },
   },
   { timestamps: true },
 );
