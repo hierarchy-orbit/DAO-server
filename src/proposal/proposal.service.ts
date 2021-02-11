@@ -657,6 +657,7 @@ export class ProposalService {
   };
 
   updateProposal = async req => {
+    console.log('Working');
     try {
       const proposal = await this.proposalModel.findById(req.params.id);
       if (!proposal) {
