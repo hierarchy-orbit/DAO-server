@@ -49,3 +49,7 @@ export const ProposalSchema = new Schema(
 );
 
 export interface Proposal {}
+
+export const BlockSchema = new Schema({ proposalBlock: { type: Number } });
+
+export interface Block {}

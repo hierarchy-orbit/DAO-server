@@ -5,7 +5,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Proposal } from './proposal.model';
+import { Proposal, Block } from './proposal.model';
 import { User } from '../user/user.model';
 import { TransactionService } from '../transaction/transaction.service';
 import { UserService } from '../user/user.service';
@@ -13,6 +13,8 @@ import { async } from 'rxjs/internal/scheduler/async';
 import { DAOAttributes } from '../admin/admin.model';
 import { EDESTADDRREQ } from 'constants';
 import { NodemailerService } from '../nodemailer/nodemailer.service';
+import { Cron } from '@nestjs/schedule';
+
 //import Web3 from 'web3'
 import {
   PHNX_PROPOSAL_ABI,
@@ -209,6 +211,7 @@ export class ProposalService {
       throw err;
     }
   };
+
   getProposalByNumioAddress = async numioAddress => {
     try {
       const result = await this.proposalModel.find({
@@ -779,4 +782,9 @@ export class ProposalService {
       throw err;
     }
   };
+
+  @Cron('*/6 * * * * *')
+  testing() {
+    console.log('Cron job');
+  }
 }

@@ -149,6 +149,67 @@ export const PHNX_PROPOSAL_ABI = [
       {
         indexed: false,
         internalType: 'string',
+        name: '_Id',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'fundsRequested',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'initiationTimestamp',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'completionTimestamp',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'colletralAmount',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'totalMilestones',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'status',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'totalVotes',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'proposer',
+        type: 'address',
+      },
+    ],
+    name: 'ProposalEditted',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'string',
         name: '_proposalId',
         type: 'string',
       },
@@ -171,6 +232,12 @@ export const PHNX_PROPOSAL_ABI = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: false,
+        internalType: 'string',
+        name: '_Id',
+        type: 'string',
+      },
       {
         indexed: false,
         internalType: 'uint256',
@@ -530,6 +597,39 @@ export const PHNX_PROPOSAL_ABI = [
   {
     inputs: [],
     name: 'unPause',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'fundsRequested',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'endTimestamp',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'colletralAmount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'totalMilestones',
+        type: 'uint256',
+      },
+      {
+        internalType: 'string',
+        name: '_proposalId',
+        type: 'string',
+      },
+    ],
+    name: 'updateProposal',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

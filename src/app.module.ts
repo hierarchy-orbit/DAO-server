@@ -19,8 +19,8 @@ import { AdminModule } from './admin/admin.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
 import { NodemailerService } from './nodemailer/nodemailer.service';
+// import { BlockModule } from './block/block.module';
 
-console.log('----->', process.env.DATABASE_URL);
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -36,6 +36,7 @@ console.log('----->', process.env.DATABASE_URL);
     StakeModule,
     AdminModule,
     CronModule,
+    // BlockModule,
   ],
   controllers: [AppController],
   providers: [AppService, NodemailerService],

@@ -12,7 +12,9 @@ import { StakeSchema } from '../stake/stake.model';
 import { TransactionService } from '../transaction/transaction.service';
 import { TransactionSchema } from '../transaction/transaction.model';
 import { DAOAttributesSchema } from '../admin/admin.model';
-import { NodemailerService } from '../nodemailer/nodemailer.service'
+import { NodemailerService } from '../nodemailer/nodemailer.service';
+
+import { BlockSchema } from '../proposal/proposal.model';
 
 @Module({
   imports: [
@@ -22,9 +24,15 @@ import { NodemailerService } from '../nodemailer/nodemailer.service'
       { name: 'Transaction', schema: TransactionSchema },
       { name: 'Stake', schema: StakeSchema },
       { name: 'DAOAttributes', schema: DAOAttributesSchema },
+      { name: 'Block', schema: BlockSchema },
     ]),
   ],
   controllers: [ProposalController],
-  providers: [ProposalService, TransactionService, UserService, NodemailerService],
+  providers: [
+    ProposalService,
+    TransactionService,
+    UserService,
+    NodemailerService,
+  ],
 })
 export class ProposalModule {}
