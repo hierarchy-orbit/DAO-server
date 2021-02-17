@@ -789,4 +789,8 @@ export class ProposalService {
   testing() {
     // console.log('Cron job');
   }
+
+  getData = async req => {
+    console.log('Working');
+  };
 }
