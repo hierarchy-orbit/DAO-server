@@ -698,6 +698,7 @@ export class ProposalService {
         };
       }
       console.log('req.body is ', req.body);
+      console.log('Working');
       const updateProposal = await this.proposalModel.findByIdAndUpdate(
         proposal._id,
         {
