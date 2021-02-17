@@ -21,6 +21,7 @@ import {
   PHNX_PROPOSAL_ADDRESS,
 } from '../contracts/contracts';
 import axios from 'axios';
+import { type } from 'os';
 
 // const fs = require('fs')
 // const axios = require('axios');
@@ -660,7 +661,7 @@ export class ProposalService {
   };
 
   updateProposal = async req => {
-    console.log('Working');
+    console.log('Working', req.params.id);
     try {
       const proposal = await this.proposalModel.findById(req.params.id);
       if (!proposal) {
