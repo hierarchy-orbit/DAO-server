@@ -793,4 +793,19 @@ export class ProposalService {
   getData = async req => {
     console.log('Working');
   };
+  getData2 = async req => {
+    console.log('Working');
+  };
+  getData3 = async req => {
+    console.log('Working');
+  };
+  getData4 = async req => {
+    console.log('Working');
+  };
+  getData5 = async req => {
+    console.log('Working');
+  };
+  getData6 = async req => {
+    console.log('Working');
+  };
 }
