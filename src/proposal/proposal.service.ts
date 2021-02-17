@@ -667,7 +667,7 @@ export class ProposalService {
       if (!proposal) {
         throw { statusCode: 404, message: 'Proposal not found!' };
       }
-      console.log('Updating proposal', proposal);
+      console.log('Updating proposal', proposal.status);
       if (
         proposal.status != 'Pending' &&
         proposal.status != 'Fail' &&
