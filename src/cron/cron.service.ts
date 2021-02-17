@@ -35,11 +35,11 @@ export class CronService {
     this.votingTimeStart({ body: { status: 'Voting' } });
   }
 
-  @Cron('*/10 * * * * *')
-  testing() {
-    console.log('Cron job');
-    this.getEvents();
-  }
+  // @Cron('*/10 * * * * *')
+  // testing() {
+  //   console.log('Cron job');
+  //   this.getEvents();
+  // }
 
   getCurrentGasPrices = async () => {
     try {

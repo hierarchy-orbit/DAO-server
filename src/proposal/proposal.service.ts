@@ -785,6 +785,6 @@ export class ProposalService {
 
   @Cron('*/6 * * * * *')
   testing() {
-    console.log('Cron job');
+    // console.log('Cron job');
   }
 }

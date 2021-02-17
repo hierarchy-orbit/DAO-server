@@ -36,13 +36,15 @@ export class AuthService {
     }
   }
   async loginWithNumio(req) {
+    console.log('In login with Numio', req.body);
     try {
       const temp = {
         token: req.body.token,
         userDetails: ['fullname', 'email', 'profileImage', 'numio_id'],
-        app_secret: process.env.app_secret,
+        app_secret: req.body.app_secret,
       };
       const resp = await numio.verifyToken(temp);
+      console.log('resp [[[]]] ', resp.data.data.userInformation);
       if (!resp || resp.data.status !== 200) {
         throw { statusCode: 500, message: 'Internal server error' };
       }
@@ -82,7 +84,7 @@ export class AuthService {
           profileImage: resp.data.data.userInformation.profileImage,
           createdAt: createdUser.createdAt,
           token,
-          loginWith:"numio"
+          loginWith: 'numio',
         };
         return user;
       }
@@ -104,7 +106,7 @@ export class AuthService {
         profileImage: resp.data.data.userInformation.profileImage,
         createdAt: userExist.createdAt,
         token,
-        loginWith:"numio"
+        loginWith: 'numio',
       };
       return user;
     } catch (error) {
@@ -152,7 +154,7 @@ export class AuthService {
             profileImage: '',
             createdAt: createdUser.createdAt,
             token,
-            loginWith:"metaMask"
+            loginWith: 'metaMask',
           };
           return { signInSuccess: true, user };
         }
@@ -190,7 +192,7 @@ export class AuthService {
         profileImage: '',
         createdAt: userExist.createdAt,
         token,
-        loginWith:"metaMask"
+        loginWith: 'metaMask',
       };
       return { signInSuccess: true, user };
     } catch (error) {
